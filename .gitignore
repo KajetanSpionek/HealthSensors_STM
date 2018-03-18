@@ -6,3 +6,4 @@ HealthSensors.elf.launch
 mx.scratch
 STM32L162RD_FLASH.Id
 STM32L162RD_FLASH.ld
+startup/
