@@ -1,7 +1,7 @@
 #include "util.h"
 
 
-/* Shutdown modes:
+/* Mode odes:
  * 0 - default, blocking shutdown - happens immediately
  * 1 - after short delay - in non blocking behaviour
  * Time:

@@ -10,7 +10,7 @@
 
 #include "stm32l1xx_hal.h"
 
-void UTIL_powerShutdown(uint8_t, uint8_t);
+void UTIL_powerShutdown(uint8_t mode, uint8_t time);
 
 
 #endif /* UTIL_H_ */
