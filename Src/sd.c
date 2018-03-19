@@ -2,7 +2,7 @@
  * sd.c
  *
  *  Created on: Mar 19, 2018
- *      Author: Kajetan
+ *      Author: Kajetan Spionek
  */
 
 #include "sd.h"

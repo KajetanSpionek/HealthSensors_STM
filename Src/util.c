@@ -1,5 +1,11 @@
-#include "util.h"
+/*
+ * util.c
+ *
+ *  Created on: Mar 19, 2018
+ *      Author: Kajetan Spionek
+ */
 
+#include "util.h"
 
 /* Mode odes:
  * 0 - default, blocking shutdown - happens immediately

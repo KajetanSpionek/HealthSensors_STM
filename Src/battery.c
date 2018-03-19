@@ -1,3 +1,10 @@
+/*
+ * battery.c
+ *
+ *  Created on: Mar 19, 2018
+ *      Author: Kajetan Spionek
+ */
+
 #include "battery.h"
 
 uint8_t BATTERY_isConnected(void) {

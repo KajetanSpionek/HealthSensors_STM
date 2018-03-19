@@ -2,7 +2,7 @@
  * sd.h
  *
  *  Created on: Mar 19, 2018
- *      Author: Kajetan
+ *      Author: Kajetan Spionek
  */
 
 #ifndef SD_H_
