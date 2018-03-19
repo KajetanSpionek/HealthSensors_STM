@@ -12,5 +12,4 @@
 
 void UTIL_powerShutdown(uint8_t mode, uint8_t time);
 
-
 #endif /* UTIL_H_ */

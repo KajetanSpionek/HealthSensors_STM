@@ -9,17 +9,17 @@
 
 uint8_t BATTERY_isConnected(void) {
 
-	return BatteryInfo.is_connected;
+	return BatteryInfo.is_charging;
 }
 
 void BATTERY_updateBatteryInfo(void) {
 
 	// Check if battery is connected
-	uint8_t _isConnected = HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_0);
+	uint8_t _isCharging = HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_0);
 	// Update BatteryInfo
-	BatteryInfo.is_connected = _isConnected;
+	BatteryInfo.is_charging = _isCharging;
 
-	if (_isConnected) {
+	if (_isCharging) {
 		// Check battery level
 		HAL_ADC_Start(&hadc);
 		if (HAL_ADC_PollForConversion(&hadc, 10) == HAL_OK) {
@@ -48,7 +48,7 @@ uint16_t BATTERY_getValue(void){
 
 uint8_t BATTERY_getIsConnected(void) {
 
-	return BatteryInfo.is_connected;
+	return BatteryInfo.is_charging;
 }
 
 uint8_t BATTERY_getLevel(void) {
