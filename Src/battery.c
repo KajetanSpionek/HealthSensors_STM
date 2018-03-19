@@ -16,12 +16,11 @@ void BATTERY_updateBatteryInfo(void) {
 		// Check battery level
 		HAL_ADC_Start(&hadc);
 		if (HAL_ADC_PollForConversion(&hadc, 10) == HAL_OK) {
-			// Pull date from and, convert to milivolts and update BatteryInfo
+			// Pull date from adc, convert to milivolts and update BatteryInfo
 			BatteryInfo.value = BATTERY_convertToMiliVolts(HAL_ADC_GetValue(&hadc));
 			// Convert to percentage and update BatteryInfo
 			BatteryInfo.level = BATTERY_convertToPercentage(BatteryInfo.value);
 		}
-		// Conversions and updating BatteryInfo
 	}
 }
 
