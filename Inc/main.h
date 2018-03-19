@@ -57,6 +57,12 @@
 
 /* Private define ------------------------------------------------------------*/
 
+#define GPIO_OUT_PWR_SD_Pin GPIO_PIN_5
+#define GPIO_OUT_PWR_SD_GPIO_Port GPIOC
+#define GPIO_IN_BAT_CHRG_Pin GPIO_PIN_0
+#define GPIO_IN_BAT_CHRG_GPIO_Port GPIOB
+#define ADC_9_BAT_LVL_Pin GPIO_PIN_1
+#define ADC_9_BAT_LVL_GPIO_Port GPIOB
 #define GPIO_OUT_LED_Pin GPIO_PIN_4
 #define GPIO_OUT_LED_GPIO_Port GPIOB
 
