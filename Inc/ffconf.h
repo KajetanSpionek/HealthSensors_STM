@@ -52,6 +52,7 @@
 / Additional user header to be used  
 /-----------------------------------------------------------------------------*/
 #include "stm32l1xx_hal.h"
+#include "bsp_driver_sd.h"
 
 /*-----------------------------------------------------------------------------/
 / Functions and Buffer Configurations

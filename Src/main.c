@@ -60,6 +60,9 @@
 /* Private variables ---------------------------------------------------------*/
 ADC_HandleTypeDef hadc;
 
+SD_HandleTypeDef hsd;
+HAL_SD_CardInfoTypedef SDCardInfo;
+
 UART_HandleTypeDef huart1;
 
 /* USER CODE BEGIN PV */
@@ -72,6 +75,7 @@ void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 static void MX_ADC_Init(void);
 static void MX_USART1_UART_Init(void);
+static void MX_SDIO_SD_Init(void);
 static void MX_NVIC_Init(void);
 
 /* USER CODE BEGIN PFP */
@@ -111,6 +115,7 @@ int main(void)
   MX_FATFS_Init();
   MX_ADC_Init();
   MX_USART1_UART_Init();
+  MX_SDIO_SD_Init();
 
   /* Initialize interrupts */
   MX_NVIC_Init();
@@ -240,6 +245,20 @@ static void MX_ADC_Init(void)
 
 }
 
+/* SDIO init function */
+static void MX_SDIO_SD_Init(void)
+{
+
+  hsd.Instance = SDIO;
+  hsd.Init.ClockEdge = SDIO_CLOCK_EDGE_RISING;
+  hsd.Init.ClockBypass = SDIO_CLOCK_BYPASS_DISABLE;
+  hsd.Init.ClockPowerSave = SDIO_CLOCK_POWER_SAVE_DISABLE;
+  hsd.Init.BusWide = SDIO_BUS_WIDE_1B;
+  hsd.Init.HardwareFlowControl = SDIO_HARDWARE_FLOW_CONTROL_DISABLE;
+  hsd.Init.ClockDiv = 0;
+
+}
+
 /* USART1 init function */
 static void MX_USART1_UART_Init(void)
 {
@@ -276,6 +295,7 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOH_CLK_ENABLE();
   __HAL_RCC_GPIOB_CLK_ENABLE();
   __HAL_RCC_GPIOA_CLK_ENABLE();
+  __HAL_RCC_GPIOD_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIO_OUT_PWR_SD_GPIO_Port, GPIO_OUT_PWR_SD_Pin, GPIO_PIN_RESET);
