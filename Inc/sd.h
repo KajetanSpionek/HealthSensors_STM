@@ -44,11 +44,11 @@ uint8_t SD_getStatus(void);
 uint8_t SD_getIsinserted(void);
 
 /**
-   * @brief Checks if card is inserted in slot
+   * @brief Called by interrupt when SD card is inserted or removed from socket;
    * @param None
-   * @retval status: 0 inserted, 1 not inserted
+   * @retval None
 */
-uint8_t SD_isInserted(void);
+void SD_changedSocket(void);
 
 /**
    * @brief Mounts SDCard
