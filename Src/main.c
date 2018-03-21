@@ -62,6 +62,8 @@
 /* Private variables ---------------------------------------------------------*/
 ADC_HandleTypeDef hadc;
 
+I2C_HandleTypeDef hi2c1;
+
 SD_HandleTypeDef hsd;
 HAL_SD_CardInfoTypedef SDCardInfo;
 
@@ -78,6 +80,7 @@ static void MX_GPIO_Init(void);
 static void MX_ADC_Init(void);
 static void MX_USART1_UART_Init(void);
 static void MX_SDIO_SD_Init(void);
+static void MX_I2C1_Init(void);
 static void MX_NVIC_Init(void);
 
 /* USER CODE BEGIN PFP */
@@ -122,41 +125,14 @@ int main(void)
   MX_ADC_Init();
   MX_USART1_UART_Init();
   MX_SDIO_SD_Init();
+  MX_I2C1_Init();
 
   /* Initialize interrupts */
   MX_NVIC_Init();
 
   /* USER CODE BEGIN 2 */
 
-  var = SD_mount();
-  size = sprintf(data, "SD mount status: %d\n", var);
-  HAL_UART_Transmit_IT(&huart1, data, size);
-
-  HAL_Delay(5);
-
-  var = SD_openFile(name);
-  size = sprintf(data, "SD open file: %d\n", var);
-  HAL_UART_Transmit_IT(&huart1, data, size);
-
-  HAL_Delay(5);
-
-  var = SD_readFile(data_ff, 25);
-  size = sprintf(data, "SD read file: %d\n", var);
-  HAL_UART_Transmit_IT(&huart1, data, size);
-
-  for(uint8_t _i = 0; _i < 25; _i++) {
-	  HAL_Delay(5);
-	  size = sprintf(data, "Data[%d]: %c\n", _i, data_ff[_i]);
-	  HAL_UART_Transmit_IT(&huart1, data, size);
-  }
-
-
-
-  HAL_Delay(5);
-
-  var = SD_closeFile();
-  size = sprintf(data, "SD close file: %d\n", var);
-  HAL_UART_Transmit_IT(&huart1, data, size);
+  	  MAX30102_init();
 
   /* USER CODE END 2 */
 
@@ -240,6 +216,9 @@ static void MX_NVIC_Init(void)
   /* FLASH_IRQn interrupt configuration */
   HAL_NVIC_SetPriority(FLASH_IRQn, 0, 0);
   HAL_NVIC_EnableIRQ(FLASH_IRQn);
+  /* I2C1_EV_IRQn interrupt configuration */
+  HAL_NVIC_SetPriority(I2C1_EV_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(I2C1_EV_IRQn);
   /* SDIO_IRQn interrupt configuration */
   HAL_NVIC_SetPriority(SDIO_IRQn, 0, 0);
   HAL_NVIC_EnableIRQ(SDIO_IRQn);
@@ -252,6 +231,9 @@ static void MX_NVIC_Init(void)
   /* USART1_IRQn interrupt configuration */
   HAL_NVIC_SetPriority(USART1_IRQn, 0, 0);
   HAL_NVIC_EnableIRQ(USART1_IRQn);
+  /* I2C1_ER_IRQn interrupt configuration */
+  HAL_NVIC_SetPriority(I2C1_ER_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(I2C1_ER_IRQn);
 }
 
 /* ADC init function */
@@ -288,6 +270,26 @@ static void MX_ADC_Init(void)
   sConfig.Rank = 1;
   sConfig.SamplingTime = ADC_SAMPLETIME_4CYCLES;
   if (HAL_ADC_ConfigChannel(&hadc, &sConfig) != HAL_OK)
+  {
+    _Error_Handler(__FILE__, __LINE__);
+  }
+
+}
+
+/* I2C1 init function */
+static void MX_I2C1_Init(void)
+{
+
+  hi2c1.Instance = I2C1;
+  hi2c1.Init.ClockSpeed = 100000;
+  hi2c1.Init.DutyCycle = I2C_DUTYCYCLE_2;
+  hi2c1.Init.OwnAddress1 = 0;
+  hi2c1.Init.AddressingMode = I2C_ADDRESSINGMODE_7BIT;
+  hi2c1.Init.DualAddressMode = I2C_DUALADDRESS_DISABLE;
+  hi2c1.Init.OwnAddress2 = 0;
+  hi2c1.Init.GeneralCallMode = I2C_GENERALCALL_DISABLE;
+  hi2c1.Init.NoStretchMode = I2C_NOSTRETCH_DISABLE;
+  if (HAL_I2C_Init(&hi2c1) != HAL_OK)
   {
     _Error_Handler(__FILE__, __LINE__);
   }

@@ -9,7 +9,6 @@
 #define INTERRUPTS_H_
 
 #include "stm32l1xx_hal.h"
-//#include "sd.h"
 
 
 #endif /* INTERRUPTS_H_ */
