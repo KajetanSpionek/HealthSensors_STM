@@ -15,18 +15,29 @@ FRESULT fresult;
 /* Getters */
 uint8_t SD_getStatus(void) {
 
-	return SDCardInfo.status;
+	return SDInfo.status;
 }
 
 uint8_t SD_getIsinserted(void) {
 
-	return SDCardInfo.is_inserted;
+	return SDInfo.is_inserted;
+}
+
+/* Setters */
+void SD_setStatus(uint8_t status) {
+
+	SDInfo.status = status;
+}
+
+void SD_setIsinserted(uint8_t status) {
+
+	SDInfo.is_inserted = status;
 }
 
 /* Interrupt handler */
 void SD_changedSocket_IT(void) {
 	// Check sd_card input;
-	// Update SDCardInfo structure
+	// Update SDInfo structure
 }
 
 /* Basic SDCard integration */
@@ -34,4 +45,37 @@ uint8_t SD_mount(void) {
 
 	return f_mount(&fatfs,(TCHAR const*)SD_Path, 1);
 }
+
+uint8_t SD_makeDirectory(uint8_t* name) {
+
+	return f_mkdir((TCHAR const*)name);
+}
+
+uint8_t SD_closeFile(void) {
+
+	return f_close(&myfile);
+}
+
+uint8_t SD_openFile(uint8_t* path) {
+
+	return f_open(&myfile,(TCHAR const*)path, FA_OPEN_EXISTING | FA_WRITE | FA_READ);
+}
+
+uint8_t SD_createFile(uint8_t* path) {
+
+	return f_open(&myfile, (TCHAR const*)path, FA_CREATE_NEW | FA_WRITE | FA_READ);
+}
+
+uint8_t SD_readFile(uint8_t* data, uint8_t data_size) {
+
+	UINT* bytes_read = 0;
+	return f_read(&myfile, data, data_size, bytes_read);
+}
+
+
+
+
+
+
+
 

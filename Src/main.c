@@ -53,7 +53,9 @@
 
 /* USER CODE BEGIN Includes */
 
+#include "interrupts.h"
 #include "battery.h"
+#include "sd.h"
 
 /* USER CODE END Includes */
 
@@ -91,7 +93,11 @@ int main(void)
 {
 
   /* USER CODE BEGIN 1 */
-
+	uint8_t data[50];
+	uint8_t data_ff[50];
+	uint8_t var = 3;
+	uint8_t size = sprintf(data, "Test msg: %d\n", var);
+	uint8_t name[9] = "wifi.txt";
   /* USER CODE END 1 */
 
   /* MCU Configuration----------------------------------------------------------*/
@@ -122,6 +128,36 @@ int main(void)
 
   /* USER CODE BEGIN 2 */
 
+  var = SD_mount();
+  size = sprintf(data, "SD mount status: %d\n", var);
+  HAL_UART_Transmit_IT(&huart1, data, size);
+
+  HAL_Delay(5);
+
+  var = SD_openFile(name);
+  size = sprintf(data, "SD open file: %d\n", var);
+  HAL_UART_Transmit_IT(&huart1, data, size);
+
+  HAL_Delay(5);
+
+  var = SD_readFile(data_ff, 25);
+  size = sprintf(data, "SD read file: %d\n", var);
+  HAL_UART_Transmit_IT(&huart1, data, size);
+
+  for(uint8_t _i = 0; _i < 25; _i++) {
+	  HAL_Delay(5);
+	  size = sprintf(data, "Data[%d]: %c\n", _i, data_ff[_i]);
+	  HAL_UART_Transmit_IT(&huart1, data, size);
+  }
+
+
+
+  HAL_Delay(5);
+
+  var = SD_closeFile();
+  size = sprintf(data, "SD close file: %d\n", var);
+  HAL_UART_Transmit_IT(&huart1, data, size);
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -133,7 +169,8 @@ int main(void)
   /* USER CODE BEGIN 3 */
 
 	  HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_4);
-	  HAL_Delay(300);
+	  HAL_Delay(1000);
+
 
   }
   /* USER CODE END 3 */
@@ -200,9 +237,18 @@ static void MX_NVIC_Init(void)
   /* RCC_IRQn interrupt configuration */
   HAL_NVIC_SetPriority(RCC_IRQn, 0, 0);
   HAL_NVIC_EnableIRQ(RCC_IRQn);
+  /* FLASH_IRQn interrupt configuration */
+  HAL_NVIC_SetPriority(FLASH_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(FLASH_IRQn);
   /* SDIO_IRQn interrupt configuration */
   HAL_NVIC_SetPriority(SDIO_IRQn, 0, 0);
   HAL_NVIC_EnableIRQ(SDIO_IRQn);
+  /* EXTI15_10_IRQn interrupt configuration */
+  HAL_NVIC_SetPriority(EXTI15_10_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(EXTI15_10_IRQn);
+  /* ADC1_IRQn interrupt configuration */
+  HAL_NVIC_SetPriority(ADC1_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(ADC1_IRQn);
   /* USART1_IRQn interrupt configuration */
   HAL_NVIC_SetPriority(USART1_IRQn, 0, 0);
   HAL_NVIC_EnableIRQ(USART1_IRQn);
@@ -258,7 +304,7 @@ static void MX_SDIO_SD_Init(void)
   hsd.Init.ClockPowerSave = SDIO_CLOCK_POWER_SAVE_DISABLE;
   hsd.Init.BusWide = SDIO_BUS_WIDE_1B;
   hsd.Init.HardwareFlowControl = SDIO_HARDWARE_FLOW_CONTROL_DISABLE;
-  hsd.Init.ClockDiv = 0;
+  hsd.Init.ClockDiv = 6;
 
 }
 
@@ -305,6 +351,12 @@ static void MX_GPIO_Init(void)
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIO_OUT_LED_GPIO_Port, GPIO_OUT_LED_Pin, GPIO_PIN_RESET);
+
+  /*Configure GPIO pin : EXTI_13_SD_Pin */
+  GPIO_InitStruct.Pin = EXTI_13_SD_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING_FALLING;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  HAL_GPIO_Init(EXTI_13_SD_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pin : GPIO_OUT_PWR_SD_Pin */
   GPIO_InitStruct.Pin = GPIO_OUT_PWR_SD_Pin;

@@ -57,6 +57,9 @@
 
 /* Private define ------------------------------------------------------------*/
 
+#define EXTI_13_SD_Pin GPIO_PIN_13
+#define EXTI_13_SD_GPIO_Port GPIOC
+#define EXTI_13_SD_EXTI_IRQn EXTI15_10_IRQn
 #define GPIO_OUT_PWR_SD_Pin GPIO_PIN_5
 #define GPIO_OUT_PWR_SD_GPIO_Port GPIOC
 #define GPIO_IN_BAT_CHRG_Pin GPIO_PIN_0

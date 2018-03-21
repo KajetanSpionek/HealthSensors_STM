@@ -25,10 +25,11 @@ typedef struct {
 
 } SDCardStruct;
 
-SDCardStruct SDCardInfo;
+SDCardStruct SDInfo;
 
 /* SD path variable */
-extern char SD_Path[4];
+char SD_Path[4];
+extern UART_HandleTypeDef huart1;
 
 /**
    * @brief SDCardInfo getter, returns status value
@@ -44,6 +45,9 @@ uint8_t SD_getStatus(void);
 */
 uint8_t SD_getIsinserted(void);
 
+void SD_setStatus(uint8_t status);
+void SD_setIsinserted(uint8_t status);
+
 /**
    * @brief Called by interrupt when SD card is inserted or removed from socket;
    * @param None
@@ -58,7 +62,11 @@ void SD_changedSocket(void);
 */
 uint8_t SD_mount(void);
 
-
+uint8_t SD_makeDirectory(uint8_t* name);
+uint8_t SD_closeFile(void);
+uint8_t SD_openFile(uint8_t* path);
+uint8_t SD_createFile(uint8_t* path);
+uint8_t SD_readFile(uint8_t* data, uint8_t data_size);
 
 
 
