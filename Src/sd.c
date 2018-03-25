@@ -66,11 +66,22 @@ uint8_t SD_createFile(uint8_t* path) {
 	return f_open(&myfile, (TCHAR const*)path, FA_CREATE_NEW | FA_WRITE | FA_READ);
 }
 
-uint8_t SD_readFile(uint8_t* data, uint8_t data_size) {
+void SD_readLine(uint8_t* data, uint8_t* length) {
 
+	uint8_t _cnt = 0;
+	uint8_t value = 0;
 	UINT* bytes_read = 0;
-	return f_read(&myfile, data, data_size, bytes_read);
+
+	while(_cnt < SD_READ_BUFF) {
+		f_read(&myfile, &value, 1, bytes_read);
+		if (value == 13 || value == 10) break;
+		data[_cnt] = value;
+		_cnt++;
+	}
+	*length = _cnt;
 }
+
+
 
 
 

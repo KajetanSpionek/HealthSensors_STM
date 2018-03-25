@@ -11,6 +11,8 @@
 #include "stm32l1xx_hal.h"
 #include "fatfs.h"
 
+#define SD_READ_BUFF 20
+
 /* Card status:
  * 0 - Not mounted
  * 1 - Mounted
@@ -66,7 +68,7 @@ uint8_t SD_makeDirectory(uint8_t* name);
 uint8_t SD_closeFile(void);
 uint8_t SD_openFile(uint8_t* path);
 uint8_t SD_createFile(uint8_t* path);
-uint8_t SD_readFile(uint8_t* data, uint8_t data_size);
+void SD_readLine(uint8_t* data, uint8_t* length);
 
 
 

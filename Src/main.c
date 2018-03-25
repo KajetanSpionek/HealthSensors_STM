@@ -101,6 +101,7 @@ int main(void)
   /* USER CODE BEGIN 1 */
 	uint8_t data[50];
 	uint8_t data_ff[50];
+	uint8_t len;
 	uint8_t var = 3;
 	uint8_t date[4] = {3,12,11,6};
 	uint8_t time[3] = {12, 3, 14};
@@ -139,9 +140,34 @@ int main(void)
 
   /* USER CODE BEGIN 2 */
 
-  	MAX30102_init();
-  	var = CLOCK_setTime(time);
-  	var = CLOCK_setDate(date);
+
+  	  // Mount SD card
+  	  var = SD_mount();
+  	  size = sprintf(data, "\nSD mount: %d\n", var);
+  	  HAL_UART_Transmit_IT(&huart1, data, size);
+  	  HAL_Delay(10);
+
+  	  // Open file
+  	  var = SD_openFile(name);
+  	  size = sprintf(data, "\nSD open: %d\n", var);
+  	  HAL_UART_Transmit_IT(&huart1, data, size);
+  	  HAL_Delay(10);
+
+
+  	  // Read file
+  	  var = SD_readLine(data_ff, &len);
+  	  size = sprintf(data, "Data[%c]: %d \n", var, len);
+  	  HAL_UART_Transmit_IT(&huart1, data, size);
+  	  HAL_Delay(10);
+
+  	  for(uint8_t _i = 0; _i < len; _i++) {
+  		  size = sprintf(data, "%c", data_ff[_i]);
+  		  HAL_UART_Transmit_IT(&huart1, data, size);
+  		  HAL_Delay(10);
+  	  }
+
+
+
 
   /* USER CODE END 2 */
 
@@ -154,11 +180,8 @@ int main(void)
   /* USER CODE BEGIN 3 */
 
 	  HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_4);
-	  HAL_Delay(5000);
-	  var = CLOCK_getTime(time);
-	  var2 = CLOCK_getDate(date);
-	  size = sprintf(data,"Time[%d]: %d:%d:%d    Date[%d]: %d:%d:%d/%d\n", var, time[0], time[1], time[2], var2, date[0], date[1], date[2], date[3], date[4]);
-	  HAL_UART_Transmit_IT(&huart1, data, size);
+	  HAL_Delay(1000);
+
 
   }
   /* USER CODE END 3 */
