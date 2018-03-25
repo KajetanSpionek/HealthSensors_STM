@@ -56,6 +56,7 @@
 #include "interrupts.h"
 #include "battery.h"
 #include "sd.h"
+#include "control.h"
 
 /* USER CODE END Includes */
 
@@ -107,7 +108,8 @@ int main(void)
 	uint8_t time[3] = {12, 3, 14};
 	uint8_t var2;
 	uint8_t size = sprintf(data, "Test msg: %d\n", var);
-	uint8_t name[9] = "wifi.txt";
+	uint8_t name[16] = "PU$HEN/wifi.txt";
+	uint8_t name2[7] = "pu$heN";
   /* USER CODE END 1 */
 
   /* MCU Configuration----------------------------------------------------------*/
@@ -140,23 +142,17 @@ int main(void)
 
   /* USER CODE BEGIN 2 */
 
-
-  	  // Mount SD card
-  	  var = SD_mount();
-  	  size = sprintf(data, "\nSD mount: %d\n", var);
-  	  HAL_UART_Transmit_IT(&huart1, data, size);
-  	  HAL_Delay(10);
-
+  // Init handler
+  CONTROL_idleHandler();
   	  // Open file
   	  var = SD_openFile(name);
-  	  size = sprintf(data, "\nSD open: %d\n", var);
+  	  size = sprintf(data, "SD open: %d\n", var);
   	  HAL_UART_Transmit_IT(&huart1, data, size);
   	  HAL_Delay(10);
 
-
   	  // Read file
-  	  var = SD_readLine(data_ff, &len);
-  	  size = sprintf(data, "Data[%c]: %d \n", var, len);
+  	  SD_readLine(data_ff, &len);
+  	  size = sprintf(data, "Data: %d \n",  len);
   	  HAL_UART_Transmit_IT(&huart1, data, size);
   	  HAL_Delay(10);
 
@@ -166,6 +162,11 @@ int main(void)
   		  HAL_Delay(10);
   	  }
 
+  	  // Make directory
+  	  var = SD_makeDirectory(name2);
+  	  size = sprintf(data, "\nMake directory: %d", var);
+  	  HAL_UART_Transmit_IT(&huart1, data, size);
+  	  HAL_Delay(10);
 
 
 
@@ -178,7 +179,7 @@ int main(void)
   /* USER CODE END WHILE */
 
   /* USER CODE BEGIN 3 */
-
+	  CONTROL_idleHandler();
 	  HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_4);
 	  HAL_Delay(1000);
 
