@@ -63,6 +63,7 @@ void I2C1_EV_IRQHandler(void);
 void I2C1_ER_IRQHandler(void);
 void USART1_IRQHandler(void);
 void EXTI15_10_IRQHandler(void);
+void RTC_Alarm_IRQHandler(void);
 void SDIO_IRQHandler(void);
 
 #ifdef __cplusplus

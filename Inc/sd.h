@@ -51,7 +51,7 @@ void SD_setStatus(uint8_t status);
 void SD_setIsinserted(uint8_t status);
 
 /**
-   * @brief Called by interrupt when SD card is inserted or removed from socket;
+   * @brief Called by interrupt when SD card is inserted or removed from socket
    * @param None
    * @retval None
 */

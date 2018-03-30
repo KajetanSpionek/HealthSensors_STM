@@ -13,6 +13,12 @@ uint8_t MEASUREMENT_setMeasurement(uint8_t mode, uint8_t type, uint8_t freq, uin
 	// Check if measurement session in progress
 	if (MeasurementInfo.is_active == 1) return 1;
 
+	// Check if SDCard is inserted
+	if (SD_getIsinserted() == 1) return 2;
+
+	// Check if SDCard is mounted
+	if (SD_getStatus() == 0) return 3;
+
 	// Set basic measurement parameters
 	MeasurementInfo.mode = mode;
 	MeasurementInfo.type = type;
@@ -36,4 +42,5 @@ uint8_t MEASUREMENT_setMeasurement(uint8_t mode, uint8_t type, uint8_t freq, uin
 
 	// Set is_active flag
 	MeasurementInfo.is_active = 1;
+	return 0;
 }

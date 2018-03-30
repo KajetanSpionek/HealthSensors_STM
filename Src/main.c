@@ -57,6 +57,7 @@
 #include "battery.h"
 #include "sd.h"
 #include "control.h"
+#include "clock.h"
 
 /* USER CODE END Includes */
 
@@ -105,7 +106,7 @@ int main(void)
 	uint8_t len;
 	uint8_t var = 3;
 	uint8_t date[4] = {3,12,11,6};
-	uint8_t time[3] = {12, 3, 14};
+	uint8_t time[3] = {20, 31, 00};
 	uint8_t var2;
 	uint8_t size = sprintf(data, "Test msg: %d\n", var);
 	uint8_t name[16] = "PU$HEN/wifi.txt";
@@ -142,8 +143,10 @@ int main(void)
 
   /* USER CODE BEGIN 2 */
 
+
+
   // Init handler
-  CONTROL_idleHandler();
+  CONTROL_initHandler();
   	  // Open file
   	  var = SD_openFile(name);
   	  size = sprintf(data, "SD open: %d\n", var);
@@ -168,6 +171,11 @@ int main(void)
   	  HAL_UART_Transmit_IT(&huart1, data, size);
   	  HAL_Delay(10);
 
+  	  var = CLOCK_SetAlarm(time);
+  	  size = sprintf(data, "\nSet Alarm: %d", var);
+  	  HAL_UART_Transmit_IT(&huart1, data, size);
+  	  HAL_Delay(10);
+
 
 
   /* USER CODE END 2 */
@@ -179,8 +187,13 @@ int main(void)
   /* USER CODE END WHILE */
 
   /* USER CODE BEGIN 3 */
-	  CONTROL_idleHandler();
-	  HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_4);
+	  //CONTROL_idleHandler();
+	  //HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_4);
+
+	  CLOCK_getTime(time);
+	  size = sprintf(data, "\nCurrent time: %d:%d:%d", time[0], time[1], time[2]);
+	  HAL_UART_Transmit_IT(&huart1, data, size);
+
 	  HAL_Delay(1000);
 
 
@@ -348,6 +361,7 @@ static void MX_RTC_Init(void)
 
   RTC_TimeTypeDef sTime;
   RTC_DateTypeDef sDate;
+  RTC_AlarmTypeDef sAlarm;
 
     /**Initialize RTC Only 
     */
@@ -366,7 +380,7 @@ static void MX_RTC_Init(void)
     /**Initialize RTC and set the Time and Date 
     */
   if(HAL_RTCEx_BKUPRead(&hrtc, RTC_BKP_DR0) != 0x32F2){
-  sTime.Hours = 0x22;
+  sTime.Hours = 0x20;
   sTime.Minutes = 0x30;
   sTime.Seconds = 0x15;
   sTime.DayLightSaving = RTC_DAYLIGHTSAVING_NONE;
@@ -378,7 +392,7 @@ static void MX_RTC_Init(void)
 
   sDate.WeekDay = RTC_WEEKDAY_WEDNESDAY;
   sDate.Month = RTC_MONTH_MARCH;
-  sDate.Date = 0x21;
+  sDate.Date = 0x30;
   sDate.Year = 0x18;
 
   if (HAL_RTC_SetDate(&hrtc, &sDate, RTC_FORMAT_BCD) != HAL_OK)
@@ -387,6 +401,23 @@ static void MX_RTC_Init(void)
   }
 
     HAL_RTCEx_BKUPWrite(&hrtc,RTC_BKP_DR0,0x32F2);
+  }
+    /**Enable the Alarm A 
+    */
+  sAlarm.AlarmTime.Hours = 0x0;
+  sAlarm.AlarmTime.Minutes = 0x0;
+  sAlarm.AlarmTime.Seconds = 0x0;
+  sAlarm.AlarmTime.SubSeconds = 0x0;
+  sAlarm.AlarmTime.DayLightSaving = RTC_DAYLIGHTSAVING_NONE;
+  sAlarm.AlarmTime.StoreOperation = RTC_STOREOPERATION_RESET;
+  sAlarm.AlarmMask = RTC_ALARMMASK_NONE;
+  sAlarm.AlarmSubSecondMask = RTC_ALARMSUBSECONDMASK_ALL;
+  sAlarm.AlarmDateWeekDaySel = RTC_ALARMDATEWEEKDAYSEL_DATE;
+  sAlarm.AlarmDateWeekDay = 0x1;
+  sAlarm.Alarm = RTC_ALARM_A;
+  if (HAL_RTC_SetAlarm_IT(&hrtc, &sAlarm, RTC_FORMAT_BCD) != HAL_OK)
+  {
+    _Error_Handler(__FILE__, __LINE__);
   }
 
 }

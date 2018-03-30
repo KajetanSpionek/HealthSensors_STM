@@ -44,6 +44,8 @@ MeasurementStruct MeasurementInfo;
    * @param start_time:
    * @retval status: 	0 - Measurements session started correctly
    * 					1 - Session already in progress
+   * 					2 - SDCard is not inserted
+   * 					3 - SDCard not mounted
 */
 uint8_t MEASUREMENT_setMeasurement(uint8_t mode, uint8_t type, uint8_t freq, uint8_t duration,
 									uint8_t length, uint8_t* start_time);
