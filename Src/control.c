@@ -10,7 +10,7 @@
 void CONTROL_initHandler(void) {
 
 	// Initialize PPG
-	//MAX30102_init();
+	// MAX30102_init();
 	// Mount SD card
 	SD_mount();
 	// Create directories (if do not exists)
@@ -34,6 +34,8 @@ void CONTROL_idleHandler(void) {
 		if(MEASUREMENT_getType() & 0x01) MEASUREMENT_getECG();
 		// Measure PPG if enabled
 		if(MEASUREMENT_getType() & 0x02) MEASUREMENT_getPPG();
+		// Reschedule next measurement time
+		MEASUREMENT_reschedule();
 	}
 }
 

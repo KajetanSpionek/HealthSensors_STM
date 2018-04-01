@@ -111,6 +111,7 @@ int main(void)
 	uint8_t size = sprintf(data, "Test msg: %d\n", var);
 	uint8_t name[16] = "PU$HEN/wifi.txt";
 	uint8_t name2[7] = "pu$heN";
+	uint8_t bb;
   /* USER CODE END 1 */
 
   /* MCU Configuration----------------------------------------------------------*/
@@ -166,8 +167,6 @@ int main(void)
 	  //CLOCK_getTime(time);
 	  //size = sprintf(data, "\nCurrent time: %d:%d:%d", time[0], time[1], time[2]);
 	  //HAL_UART_Transmit_IT(&huart1, data, size);
-
-	  //HAL_Delay(1000);
 
 
   }

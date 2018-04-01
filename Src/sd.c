@@ -36,8 +36,8 @@ void SD_setIsinserted(uint8_t status) {
 
 /* Interrupt handler */
 void SD_changedSocket_IT(void) {
-	// Check sd_card input;
-	// Update SDInfo structure
+	// Check sd_card input and update SDStructure
+	SD_setIsinserted(HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_13));
 }
 
 /* Basic SDCard integration */

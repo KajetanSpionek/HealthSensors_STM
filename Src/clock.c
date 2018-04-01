@@ -50,7 +50,7 @@ uint8_t CLOCK_setDate(uint8_t* date) {
 	return HAL_RTC_SetDate(&hrtc, &current_date, RTC_FORMAT_BIN);
 }
 
-uint8_t CLOCK_SetAlarm(uint8_t* time) {
+uint8_t CLOCK_setAlarm(uint8_t* time) {
 
 	uint8_t data[50];
 	uint8_t size = sprintf(data, "\nAlarm time: %d:%d:%d", time[0], time[1], time[2]);

@@ -14,7 +14,7 @@ uint8_t MEASUREMENT_setMeasurement(uint8_t mode, uint8_t type, uint8_t freq, uin
 	if (MeasurementInfo.is_active == 1) return 1;
 
 	// Check if SDCard is inserted
-	//if (SD_getIsinserted() == 1) return 2;
+	if (SD_getIsinserted() == 1) return 2;
 
 	// Check if SDCard is mounted
 	//if (SD_getStatus() == 0) return 3;
@@ -29,9 +29,10 @@ uint8_t MEASUREMENT_setMeasurement(uint8_t mode, uint8_t type, uint8_t freq, uin
 	MeasurementInfo.start_time[1] = start_time[1];
 	MeasurementInfo.start_time[2] = start_time[2];
 	MeasurementInfo.no = 0;
+	MeasurementInfo.finished = 0;
 
 	// Calculate left_measurements
-	MeasurementInfo.left_measurements = length * 60 / freq;
+	MeasurementInfo.amount = length * 60 / freq;
 
 	// Set next measurement to starting time
 	MeasurementInfo.next_time[0] = start_time[0];
@@ -39,7 +40,7 @@ uint8_t MEASUREMENT_setMeasurement(uint8_t mode, uint8_t type, uint8_t freq, uin
 	MeasurementInfo.next_time[2] = start_time[2];
 
 	// Set Alarm
-	CLOCK_SetAlarm(start_time);
+	CLOCK_setAlarm(start_time);
 
 	// Set is_active and flag
 	MeasurementInfo.flag = 0;
@@ -77,6 +78,16 @@ uint8_t MEASUREMENT_getType(void) {
 	return MeasurementInfo.type;
 }
 
+uint8_t MEASUREMENT_getAmount(void) {
+
+	return MeasurementInfo.amount;
+}
+
+uint8_t MEASUREMENT_getFreq(void) {
+
+	return MeasurementInfo.freq;
+}
+
 uint8_t MEASUREMENT_getPPG(void) {
 
 	// Initialize variables
@@ -108,6 +119,45 @@ uint8_t MEASUREMENT_getECG(void) {
 
 	return 0;
 }
+
+void MEASUREMENT_reschedule(void) {
+
+	// Check measurement session should continue
+	// Total amount of measurements needed - how many has been performed
+	if ((MEASUREMENT_getAmount() - MEASUREMENT_getNo()) == 0) MeasurementInfo.finished = 1;
+	else {
+		// Reschedule next measurement
+		uint8_t time[3]; /* H/M/S */
+		CLOCK_getTime(time);
+		time[2]+= MEASUREMENT_getFreq();
+		if (time[2] >= 60) {
+			time[2]-= 60;
+			time[1]+=1;
+			if (time[1] >= 24) time[1]-=24;
+		}
+		CLOCK_setAlarm(time);
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

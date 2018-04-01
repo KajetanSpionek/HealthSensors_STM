@@ -32,10 +32,11 @@ typedef struct {
 	uint8_t duration; 			/* Duration of measurement in seconds */
 	uint8_t length; 			/* Length of measurements in hours */
 	uint8_t start_time[3];   	/* Time of first measurement (H/M/S) */
-	uint8_t left_measurements;  /* Number of left measurements in this session */
+	uint8_t amount;  			/* Number of left measurements in this session */
 	uint8_t next_time[3];		/* Time of next measurement (H/M/S) */
 	uint8_t flag;				/* Interrupt measurement flag */
-	uint8_t no;					/* No. of current measurement */
+	uint8_t no;					/* No. of current/last measurement */
+	uint8_t finished;			/* Possitive if measurement session completed */
 
 } MeasurementStruct;
 
@@ -64,11 +65,16 @@ uint8_t MEASUREMENT_getNo(void);
 void MEASUREMENT_incNo(void);
 uint8_t MEASUREMENT_getIsActive(void);
 uint8_t MEASUREMENT_getType(void);
+uint8_t MEASUREMENT_getAmount(void);
+uint8_t MEASUREMENT_getFreq(void);
 
 
 /* Measurement functions */
 uint8_t MEASUREMENT_getPPG(void);
 uint8_t MEASUREMENT_getECG(void);
+
+/* Other functions */
+void MEASUREMENT_reschedule(void);
 
 
 #endif /* MEASUREMENT_H_ */
