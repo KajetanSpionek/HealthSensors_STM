@@ -14,10 +14,10 @@ uint8_t MEASUREMENT_setMeasurement(uint8_t mode, uint8_t type, uint8_t freq, uin
 	if (MeasurementInfo.is_active == 1) return 1;
 
 	// Check if SDCard is inserted
-	if (SD_getIsinserted() == 1) return 2;
+	//if (SD_getIsinserted() == 1) return 2;
 
 	// Check if SDCard is mounted
-	if (SD_getStatus() == 0) return 3;
+	//if (SD_getStatus() == 0) return 3;
 
 	// Set basic measurement parameters
 	MeasurementInfo.mode = mode;
@@ -28,6 +28,7 @@ uint8_t MEASUREMENT_setMeasurement(uint8_t mode, uint8_t type, uint8_t freq, uin
 	MeasurementInfo.start_time[0] = start_time[0];
 	MeasurementInfo.start_time[1] = start_time[1];
 	MeasurementInfo.start_time[2] = start_time[2];
+	MeasurementInfo.no = 0;
 
 	// Calculate left_measurements
 	MeasurementInfo.left_measurements = length * 60 / freq;
@@ -38,9 +39,76 @@ uint8_t MEASUREMENT_setMeasurement(uint8_t mode, uint8_t type, uint8_t freq, uin
 	MeasurementInfo.next_time[2] = start_time[2];
 
 	// Set Alarm
+	CLOCK_SetAlarm(start_time);
 
-
-	// Set is_active flag
+	// Set is_active and flag
+	MeasurementInfo.flag = 0;
 	MeasurementInfo.is_active = 1;
 	return 0;
 }
+
+void MEASUREMENT_setFlag(uint8_t value) {
+
+	MeasurementInfo.flag = value;
+}
+
+uint8_t MEASUREMENT_getFlag(void) {
+
+	return MeasurementInfo.flag;
+}
+
+uint8_t MEASUREMENT_getNo(void) {
+
+	return MeasurementInfo.no;
+}
+
+void MEASUREMENT_incNo(void) {
+
+	MeasurementInfo.no+=1;
+}
+
+uint8_t MEASUREMENT_getIsActive(void) {
+
+	return MeasurementInfo.is_active;
+}
+
+uint8_t MEASUREMENT_getType(void) {
+
+	return MeasurementInfo.type;
+}
+
+uint8_t MEASUREMENT_getPPG(void) {
+
+	// Initialize variables
+	uint32_t red,ir;
+	uint16_t cnt = 0;
+	uint16_t alternative_cnt = 0;
+	// Open proper files
+	SD_createFile((uint8_t*) "ppg/1.txt");
+	// Save name of file to variable
+	MAX30102_init();
+	// PPG loop
+	while(cnt < 1000) {
+		if (MAX30102_getRegValue(MAX30102_INT_STATUS1) & 0x40) {
+			MAX30102_read(&red, &ir);
+			SD_savePPG(&red, &ir);
+			cnt+=1;
+			HAL_Delay(2);
+		}
+		else {
+			alternative_cnt+=1;
+		}
+	}
+	// Close file
+	SD_closeFile();
+	HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_4);
+	return 0;
+}
+uint8_t MEASUREMENT_getECG(void) {
+
+	return 0;
+}
+
+
+
+

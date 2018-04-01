@@ -20,7 +20,7 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin) {
 /* Alarm interrupts */
 void HAL_RTC_AlarmAEventCallback(RTC_HandleTypeDef *hrtc) {
 
-	HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_4);
+	MEASUREMENT_setFlag(1);
 }
 
 

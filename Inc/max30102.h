@@ -49,7 +49,7 @@ void MAX30102_init(void);
 uint8_t MAX30102_getRegValue(uint8_t address);
 void MAX30102_setRegValue(uint8_t address,uint8_t value);
 void MAX30102_getRegMultipleValues(uint8_t address, uint8_t* buf, uint8_t len);
-
+void MAX30102_read(uint32_t* red, uint32_t* ir);
 
 
 

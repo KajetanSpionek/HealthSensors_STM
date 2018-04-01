@@ -9,6 +9,11 @@
 #define MEASUREMENT_H_
 
 #include "stm32l1xx_hal.h"
+#include "sd.h"
+#include "clock.h"
+#include "max30102.h"
+
+extern UART_HandleTypeDef huart1;
 
 typedef struct {
 
@@ -23,12 +28,14 @@ typedef struct {
 							 	 1 - ECG
 							 	 2 - PPG
 							 	 3 - Both */
-	uint8_t freq; 				/* Frequency of measurements in minutes */
+	uint8_t freq; 				/* Frequency of measurements in minutes - 10,30,60 */
 	uint8_t duration; 			/* Duration of measurement in seconds */
 	uint8_t length; 			/* Length of measurements in hours */
 	uint8_t start_time[3];   	/* Time of first measurement (H/M/S) */
 	uint8_t left_measurements;  /* Number of left measurements in this session */
 	uint8_t next_time[3];		/* Time of next measurement (H/M/S) */
+	uint8_t flag;				/* Interrupt measurement flag */
+	uint8_t no;					/* No. of current measurement */
 
 } MeasurementStruct;
 
@@ -49,6 +56,19 @@ MeasurementStruct MeasurementInfo;
 */
 uint8_t MEASUREMENT_setMeasurement(uint8_t mode, uint8_t type, uint8_t freq, uint8_t duration,
 									uint8_t length, uint8_t* start_time);
+
+/* Setters and getters */
+void MEASUREMENT_setFlag(uint8_t value);
+uint8_t MEASUREMENT_getFlag(void);
+uint8_t MEASUREMENT_getNo(void);
+void MEASUREMENT_incNo(void);
+uint8_t MEASUREMENT_getIsActive(void);
+uint8_t MEASUREMENT_getType(void);
+
+
+/* Measurement functions */
+uint8_t MEASUREMENT_getPPG(void);
+uint8_t MEASUREMENT_getECG(void);
 
 
 #endif /* MEASUREMENT_H_ */

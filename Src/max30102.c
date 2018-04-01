@@ -22,7 +22,7 @@ void MAX30102_init(void) {
 	// SPO2 config - 100 SPS and ADC res 18bits
     MAX30102_setRegValue(MAX30102_SPO2_CONFIG, 0x67);
 	// Diodes current
-  	MAX30102_setRegValue(MAX30102_LED1_AMP , 0x3C);
+  	MAX30102_setRegValue(MAX30102_LED1_AMP , 0x4F);
   	MAX30102_setRegValue(MAX30102_LED2_AMP, 0x40);
 	// No averageing
 	MAX30102_setRegValue(MAX30102_FIFO_CONFIG, 0x00);
@@ -43,6 +43,16 @@ void MAX30102_setRegValue(uint8_t address,uint8_t value) {
 void MAX30102_getRegMultipleValues(uint8_t address, uint8_t* buf, uint8_t len) {
 
 	HAL_I2C_Mem_Read(&hi2c1, MAX30102_ADDRESS, address, 1, buf, len, 100);
+}
+
+void MAX30102_read(uint32_t* red, uint32_t* ir) {
+	// Buffer for IR and RED diode data
+	uint8_t buf[6];
+	// Read data
+	MAX30102_getRegMultipleValues(MAX30102_FIFO_DATA, buf, 6);
+	// Store data as 32bit variables
+	*red = ((buf[0]&0x03)<<16) | buf[1]<<8 | buf[2];
+	*ir = ((buf[3]&0x03)<<16) | buf[4]<<8 | buf[5];
 }
 
 

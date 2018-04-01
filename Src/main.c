@@ -106,7 +106,7 @@ int main(void)
 	uint8_t len;
 	uint8_t var = 3;
 	uint8_t date[4] = {3,12,11,6};
-	uint8_t time[3] = {20, 31, 00};
+	uint8_t time[3] = {20, 30, 25};
 	uint8_t var2;
 	uint8_t size = sprintf(data, "Test msg: %d\n", var);
 	uint8_t name[16] = "PU$HEN/wifi.txt";
@@ -147,34 +147,7 @@ int main(void)
 
   // Init handler
   CONTROL_initHandler();
-  	  // Open file
-  	  var = SD_openFile(name);
-  	  size = sprintf(data, "SD open: %d\n", var);
-  	  HAL_UART_Transmit_IT(&huart1, data, size);
-  	  HAL_Delay(10);
-
-  	  // Read file
-  	  SD_readLine(data_ff, &len);
-  	  size = sprintf(data, "Data: %d \n",  len);
-  	  HAL_UART_Transmit_IT(&huart1, data, size);
-  	  HAL_Delay(10);
-
-  	  for(uint8_t _i = 0; _i < len; _i++) {
-  		  size = sprintf(data, "%c", data_ff[_i]);
-  		  HAL_UART_Transmit_IT(&huart1, data, size);
-  		  HAL_Delay(10);
-  	  }
-
-  	  // Make directory
-  	  var = SD_makeDirectory(name2);
-  	  size = sprintf(data, "\nMake directory: %d", var);
-  	  HAL_UART_Transmit_IT(&huart1, data, size);
-  	  HAL_Delay(10);
-
-  	  var = CLOCK_SetAlarm(time);
-  	  size = sprintf(data, "\nSet Alarm: %d", var);
-  	  HAL_UART_Transmit_IT(&huart1, data, size);
-  	  HAL_Delay(10);
+  //MEASUREMENT_setMeasurement(0,2,10, 30, 1, time);
 
 
 
@@ -187,14 +160,14 @@ int main(void)
   /* USER CODE END WHILE */
 
   /* USER CODE BEGIN 3 */
-	  //CONTROL_idleHandler();
+	  CONTROL_idleHandler();
 	  //HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_4);
 
-	  CLOCK_getTime(time);
-	  size = sprintf(data, "\nCurrent time: %d:%d:%d", time[0], time[1], time[2]);
-	  HAL_UART_Transmit_IT(&huart1, data, size);
+	  //CLOCK_getTime(time);
+	  //size = sprintf(data, "\nCurrent time: %d:%d:%d", time[0], time[1], time[2]);
+	  //HAL_UART_Transmit_IT(&huart1, data, size);
 
-	  HAL_Delay(1000);
+	  //HAL_Delay(1000);
 
 
   }
@@ -275,6 +248,9 @@ static void MX_NVIC_Init(void)
   /* FLASH_IRQn interrupt configuration */
   HAL_NVIC_SetPriority(FLASH_IRQn, 0, 0);
   HAL_NVIC_EnableIRQ(FLASH_IRQn);
+  /* RTC_Alarm_IRQn interrupt configuration */
+  HAL_NVIC_SetPriority(RTC_Alarm_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(RTC_Alarm_IRQn);
   /* I2C1_EV_IRQn interrupt configuration */
   HAL_NVIC_SetPriority(I2C1_EV_IRQn, 0, 0);
   HAL_NVIC_EnableIRQ(I2C1_EV_IRQn);

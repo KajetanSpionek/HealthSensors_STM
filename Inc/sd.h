@@ -25,6 +25,8 @@ typedef struct {
 	uint8_t is_inserted;	// Positive if SD card is inserted in slot
 	uint8_t file_name[15];  // Holds name of currently opened file
 
+
+
 } SDCardStruct;
 
 SDCardStruct SDInfo;
@@ -69,6 +71,7 @@ uint8_t SD_closeFile(void);
 uint8_t SD_openFile(uint8_t* path);
 uint8_t SD_createFile(uint8_t* path);
 void SD_readLine(uint8_t* data, uint8_t* length);
+void SD_savePPG(uint32_t* red, uint32_t* ir);
 
 
 

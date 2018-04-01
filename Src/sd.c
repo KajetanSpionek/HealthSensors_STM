@@ -81,6 +81,15 @@ void SD_readLine(uint8_t* data, uint8_t* length) {
 	*length = _cnt;
 }
 
+void SD_savePPG(uint32_t* red, uint32_t* ir) {
+
+	uint32_t static byteswritten;
+	uint8_t static wtext[30];
+	uint8_t static  msg_size = 0;
+	msg_size = sprintf(wtext, "%d,%d\r", *red, *ir);
+	f_write(&myfile, wtext, msg_size, (void*)&byteswritten);
+}
+
 
 
 
