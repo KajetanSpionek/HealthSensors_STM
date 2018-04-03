@@ -7,7 +7,7 @@
 
 #include "measurement.h"
 
-uint8_t MEASUREMENT_setMeasurement(uint8_t mode, uint8_t type, uint8_t freq, uint8_t duration,
+uint8_t MEASUREMENT_setMeasurement(uint32_t id, uint8_t mode, uint8_t type, uint8_t freq, uint8_t duration,
 									uint8_t length, uint8_t* start_time) {
 
 	// Check if measurement session in progress
@@ -30,6 +30,7 @@ uint8_t MEASUREMENT_setMeasurement(uint8_t mode, uint8_t type, uint8_t freq, uin
 	MeasurementInfo.start_time[2] = start_time[2];
 	MeasurementInfo.no = 0;
 	MeasurementInfo.finished = 0;
+	MeasurementInfo.id = id;
 
 	// Calculate left_measurements
 	MeasurementInfo.amount = length * 60 / freq;

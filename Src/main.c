@@ -148,7 +148,7 @@ int main(void)
 
   // Init handler
   CONTROL_initHandler();
-  //MEASUREMENT_setMeasurement(0,2,10, 30, 1, time);
+  //MEASUREMENT_setMeasurement(0x43,0,2,10, 30, 1, time);
 
 
 
