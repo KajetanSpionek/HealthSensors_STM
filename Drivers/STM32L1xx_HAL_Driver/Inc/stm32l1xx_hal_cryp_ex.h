@@ -1,10 +1,12 @@
 /**
   ******************************************************************************
-  * @file    stm32l1xx_it.h
-  * @brief   This file contains the headers of the interrupt handlers.
+  * @file    stm32l1xx_hal_cryp_ex.h
+  * @author  MCD Application Team
+  * @brief   Header file of CRYPEx HAL module.
   ******************************************************************************
+  * @attention
   *
-  * COPYRIGHT(c) 2018 STMicroelectronics
+  * <h2><center>&copy; COPYRIGHT(c) 2017 STMicroelectronics</center></h2>
   *
   * Redistribution and use in source and binary forms, with or without modification,
   * are permitted provided that the following conditions are met:
@@ -29,50 +31,66 @@
   * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   *
   ******************************************************************************
-  */
+  */ 
 
 /* Define to prevent recursive inclusion -------------------------------------*/
-#ifndef __STM32L1xx_IT_H
-#define __STM32L1xx_IT_H
+#ifndef __STM32L1xx_HAL_CRYP_EX_H
+#define __STM32L1xx_HAL_CRYP_EX_H
 
 #ifdef __cplusplus
  extern "C" {
-#endif 
+#endif
+   
+#if defined(STM32L162xC) || defined(STM32L162xCA) || defined(STM32L162xD) || defined(STM32L162xE) || defined(STM32L162xDX)
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32l1xx_hal.h"
-#include "main.h"
-/* Exported types ------------------------------------------------------------*/
+#include "stm32l1xx_hal_def.h"
+
+/** @addtogroup STM32L1xx_HAL_Driver
+  * @{
+  */
+
+/** @addtogroup CRYPEx
+  * @{
+  */ 
+
+/* Exported types ------------------------------------------------------------*/ 
 /* Exported constants --------------------------------------------------------*/
-/* Exported macro ------------------------------------------------------------*/
-/* Exported functions ------------------------------------------------------- */
+/* Exported functions --------------------------------------------------------*/
 
-void NMI_Handler(void);
-void HardFault_Handler(void);
-void MemManage_Handler(void);
-void BusFault_Handler(void);
-void UsageFault_Handler(void);
-void SVC_Handler(void);
-void DebugMon_Handler(void);
-void PendSV_Handler(void);
-void SysTick_Handler(void);
-void FLASH_IRQHandler(void);
-void RCC_IRQHandler(void);
-void ADC1_IRQHandler(void);
-void USB_HP_IRQHandler(void);
-void USB_LP_IRQHandler(void);
-void I2C1_EV_IRQHandler(void);
-void I2C1_ER_IRQHandler(void);
-void USART1_IRQHandler(void);
-void EXTI15_10_IRQHandler(void);
-void RTC_Alarm_IRQHandler(void);
-void SDIO_IRQHandler(void);
-void AES_IRQHandler(void);
+/** @addtogroup CRYPEx_Exported_Functions
+  * @{
+  */
 
+/** @addtogroup CRYPEx_Exported_Functions_Group1
+  * @{
+  */
+
+/* CallBack functions  ********************************************************/
+void HAL_CRYPEx_ComputationCpltCallback(CRYP_HandleTypeDef *hcryp);
+
+/**
+  * @}
+  */ 
+
+/**
+  * @}
+  */ 
+
+#endif /* STM32L162xC || STM32L162xCA || STM32L162xD || STM32L162xE || STM32L162xDX*/
+
+/**
+  * @}
+  */ 
+
+/**
+  * @}
+  */ 
+  
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* __STM32L1xx_IT_H */
+#endif /* __STM32L1xx_HAL_CRYP_EX_H */
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

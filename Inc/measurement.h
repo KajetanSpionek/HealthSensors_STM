@@ -37,7 +37,7 @@ typedef struct {
 	uint8_t flag;				/* Interrupt measurement flag */
 	uint8_t no;					/* No. of current/last measurement */
 	uint8_t finished;			/* Positive if measurement session completed */
-	uint32_t id;				/* Measurement ID - unique session identifier */
+	uint16_t id;				/* Measurement ID - unique session identifier */
 
 } MeasurementStruct;
 
@@ -57,7 +57,7 @@ MeasurementStruct MeasurementInfo;
    * 					2 - SDCard is not inserted
    * 					3 - SDCard not mounted
 */
-uint8_t MEASUREMENT_setMeasurement(uint32_t id, uint8_t mode, uint8_t type, uint8_t freq, uint8_t duration,
+uint8_t MEASUREMENT_setMeasurement(uint16_t id, uint8_t mode, uint8_t type, uint8_t freq, uint8_t duration,
 									uint8_t length, uint8_t* start_time);
 
 /* Setters and getters */
@@ -69,7 +69,8 @@ uint8_t MEASUREMENT_getIsActive(void);
 uint8_t MEASUREMENT_getType(void);
 uint8_t MEASUREMENT_getAmount(void);
 uint8_t MEASUREMENT_getFreq(void);
-
+uint16_t MEASUREMENT_getId(void);
+uint8_t MEASUREMENT_getDuration(void);
 
 /* Measurement functions */
 uint8_t MEASUREMENT_getPPG(void);

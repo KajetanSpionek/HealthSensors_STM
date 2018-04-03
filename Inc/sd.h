@@ -23,9 +23,6 @@ typedef struct {
 
 	uint8_t status;			// Returns SD card status
 	uint8_t is_inserted;	// Positive if SD card is inserted in slot
-	uint8_t file_name[15];  // Holds name of currently opened file
-
-
 
 } SDCardStruct;
 
@@ -48,7 +45,6 @@ uint8_t SD_getStatus(void);
    * @retval status: 0 inserted, 1 not inserted
 */
 uint8_t SD_getIsinserted(void);
-
 void SD_setStatus(uint8_t status);
 void SD_setIsinserted(uint8_t status);
 

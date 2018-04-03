@@ -7,7 +7,7 @@
 
 #include "measurement.h"
 
-uint8_t MEASUREMENT_setMeasurement(uint32_t id, uint8_t mode, uint8_t type, uint8_t freq, uint8_t duration,
+uint8_t MEASUREMENT_setMeasurement(uint16_t id, uint8_t mode, uint8_t type, uint8_t freq, uint8_t duration,
 									uint8_t length, uint8_t* start_time) {
 
 	// Check if measurement session in progress
@@ -89,31 +89,38 @@ uint8_t MEASUREMENT_getFreq(void) {
 	return MeasurementInfo.freq;
 }
 
+uint16_t MEASUREMENT_getId(void) {
+
+	return MeasurementInfo.id;
+}
+
+uint8_t MEASUREMENT_getDuration(void) {
+
+	return MeasurementInfo.duration;
+}
+
 uint8_t MEASUREMENT_getPPG(void) {
 
 	// Initialize variables
 	uint32_t red,ir;
 	uint16_t cnt = 0;
-	uint16_t alternative_cnt = 0;
+	uint8_t file_path[30];
+	sprintf(file_path,"ppg/%x_%d.txt ", MEASUREMENT_getId(), MEASUREMENT_getNo());
 	// Open proper files
-	SD_createFile((uint8_t*) "ppg/1.txt");
+	SD_createFile((uint8_t*) file_path);
 	// Save name of file to variable
 	MAX30102_init();
 	// PPG loop
-	while(cnt < 1000) {
+	while(cnt < MEASUREMENT_getDuration()*100) {
 		if (MAX30102_getRegValue(MAX30102_INT_STATUS1) & 0x40) {
 			MAX30102_read(&red, &ir);
 			SD_savePPG(&red, &ir);
 			cnt+=1;
 			HAL_Delay(2);
 		}
-		else {
-			alternative_cnt+=1;
-		}
 	}
 	// Close file
 	SD_closeFile();
-	HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_4);
 	return 0;
 }
 uint8_t MEASUREMENT_getECG(void) {
@@ -130,13 +137,20 @@ void MEASUREMENT_reschedule(void) {
 		// Reschedule next measurement
 		uint8_t time[3]; /* H/M/S */
 		CLOCK_getTime(time);
-		time[2]+= MEASUREMENT_getFreq();
-		if (time[2] >= 60) {
-			time[2]-= 60;
-			time[1]+=1;
-			if (time[1] >= 24) time[1]-=24;
+		uint8_t data[50];
+		uint8_t size = sprintf(data, "\nCurrent time: %d:%d:%d", time[0], time[1], time[2]);
+		HAL_UART_Transmit_IT(&huart1, data, size);
+		HAL_Delay(3);
+		time[1]+= MEASUREMENT_getFreq();
+		if (time[1] >= 60) {
+			time[1]-= 60;
+			time[0]+=1;
+			if (time[0] >= 24) time[0]-=24;
 		}
+		size = sprintf(data, "\nNext Alarm time: %d:%d:%d", time[0], time[1], time[2]);
+		HAL_UART_Transmit_IT(&huart1, data, size);
 		CLOCK_setAlarm(time);
+		HAL_Delay(3);
 	}
 }
 

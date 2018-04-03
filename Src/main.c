@@ -50,6 +50,7 @@
 #include "main.h"
 #include "stm32l1xx_hal.h"
 #include "fatfs.h"
+#include "usb_device.h"
 
 /* USER CODE BEGIN Includes */
 
@@ -63,6 +64,13 @@
 
 /* Private variables ---------------------------------------------------------*/
 ADC_HandleTypeDef hadc;
+
+CRYP_HandleTypeDef hcryp;
+__ALIGN_BEGIN static const uint8_t pKeyAES[16] __ALIGN_END = {
+                            0x01,0x58,0x36,0x28,0x7F,0xE6,0xCD,0x12,0x9A,0x65,
+                            0x68,0x6A,0x68,0xC8,0x98,0x9B};
+
+CRC_HandleTypeDef hcrc;
 
 I2C_HandleTypeDef hi2c1;
 
@@ -86,6 +94,8 @@ static void MX_USART1_UART_Init(void);
 static void MX_SDIO_SD_Init(void);
 static void MX_I2C1_Init(void);
 static void MX_RTC_Init(void);
+static void MX_CRC_Init(void);
+static void MX_AES_Init(void);
 static void MX_NVIC_Init(void);
 
 /* USER CODE BEGIN PFP */
@@ -102,16 +112,10 @@ int main(void)
 
   /* USER CODE BEGIN 1 */
 	uint8_t data[50];
-	uint8_t data_ff[50];
-	uint8_t len;
 	uint8_t var = 3;
-	uint8_t date[4] = {3,12,11,6};
+	//uint8_t date[4] = {3,12,11,6};
 	uint8_t time[3] = {20, 30, 25};
-	uint8_t var2;
 	uint8_t size = sprintf(data, "Test msg: %d\n", var);
-	uint8_t name[16] = "PU$HEN/wifi.txt";
-	uint8_t name2[7] = "pu$heN";
-	uint8_t bb;
   /* USER CODE END 1 */
 
   /* MCU Configuration----------------------------------------------------------*/
@@ -138,6 +142,9 @@ int main(void)
   MX_SDIO_SD_Init();
   MX_I2C1_Init();
   MX_RTC_Init();
+  MX_USB_DEVICE_Init();
+  MX_CRC_Init();
+  MX_AES_Init();
 
   /* Initialize interrupts */
   MX_NVIC_Init();
@@ -148,7 +155,7 @@ int main(void)
 
   // Init handler
   CONTROL_initHandler();
-  //MEASUREMENT_setMeasurement(0x43,0,2,10, 30, 1, time);
+  MEASUREMENT_setMeasurement(0x46A2,0,2,1,30,1, time);
 
 
 
@@ -167,6 +174,7 @@ int main(void)
 	  //CLOCK_getTime(time);
 	  //size = sprintf(data, "\nCurrent time: %d:%d:%d", time[0], time[1], time[2]);
 	  //HAL_UART_Transmit_IT(&huart1, data, size);
+	  //HAL_Delay(1000);
 
 
   }
@@ -259,15 +267,24 @@ static void MX_NVIC_Init(void)
   /* EXTI15_10_IRQn interrupt configuration */
   HAL_NVIC_SetPriority(EXTI15_10_IRQn, 0, 0);
   HAL_NVIC_EnableIRQ(EXTI15_10_IRQn);
-  /* ADC1_IRQn interrupt configuration */
-  HAL_NVIC_SetPriority(ADC1_IRQn, 0, 0);
-  HAL_NVIC_EnableIRQ(ADC1_IRQn);
   /* USART1_IRQn interrupt configuration */
   HAL_NVIC_SetPriority(USART1_IRQn, 0, 0);
   HAL_NVIC_EnableIRQ(USART1_IRQn);
   /* I2C1_ER_IRQn interrupt configuration */
   HAL_NVIC_SetPriority(I2C1_ER_IRQn, 0, 0);
   HAL_NVIC_EnableIRQ(I2C1_ER_IRQn);
+  /* ADC1_IRQn interrupt configuration */
+  HAL_NVIC_SetPriority(ADC1_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(ADC1_IRQn);
+  /* USB_LP_IRQn interrupt configuration */
+  HAL_NVIC_SetPriority(USB_LP_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(USB_LP_IRQn);
+  /* AES_IRQn interrupt configuration */
+  HAL_NVIC_SetPriority(AES_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(AES_IRQn);
+  /* USB_HP_IRQn interrupt configuration */
+  HAL_NVIC_SetPriority(USB_HP_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(USB_HP_IRQn);
 }
 
 /* ADC init function */
@@ -304,6 +321,32 @@ static void MX_ADC_Init(void)
   sConfig.Rank = 1;
   sConfig.SamplingTime = ADC_SAMPLETIME_4CYCLES;
   if (HAL_ADC_ConfigChannel(&hadc, &sConfig) != HAL_OK)
+  {
+    _Error_Handler(__FILE__, __LINE__);
+  }
+
+}
+
+/* AES init function */
+static void MX_AES_Init(void)
+{
+
+  hcryp.Instance = AES;
+  hcryp.Init.DataType = CRYP_DATATYPE_32B;
+  hcryp.Init.pKey = (uint8_t *)pKeyAES;
+  if (HAL_CRYP_Init(&hcryp) != HAL_OK)
+  {
+    _Error_Handler(__FILE__, __LINE__);
+  }
+
+}
+
+/* CRC init function */
+static void MX_CRC_Init(void)
+{
+
+  hcrc.Instance = CRC;
+  if (HAL_CRC_Init(&hcrc) != HAL_OK)
   {
     _Error_Handler(__FILE__, __LINE__);
   }

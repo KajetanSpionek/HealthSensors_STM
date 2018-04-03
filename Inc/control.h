@@ -12,6 +12,9 @@
 #include "max30102.h"
 #include "sd.h"
 #include "measurement.h"
+#include "device.h"
+
+extern UART_HandleTypeDef huart1;
 
 void CONTROL_initHandler(void);
 void CONTROL_idleHandler(void);

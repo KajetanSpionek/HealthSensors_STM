@@ -143,6 +143,77 @@ void HAL_ADC_MspDeInit(ADC_HandleTypeDef* hadc)
 
 }
 
+void HAL_CRYP_MspInit(CRYP_HandleTypeDef* hcryp)
+{
+
+  if(hcryp->Instance==AES)
+  {
+  /* USER CODE BEGIN AES_MspInit 0 */
+
+  /* USER CODE END AES_MspInit 0 */
+    /* Peripheral clock enable */
+    __HAL_RCC_CRYP_CLK_ENABLE();
+  /* USER CODE BEGIN AES_MspInit 1 */
+
+  /* USER CODE END AES_MspInit 1 */
+  }
+
+}
+
+void HAL_CRYP_MspDeInit(CRYP_HandleTypeDef* hcryp)
+{
+
+  if(hcryp->Instance==AES)
+  {
+  /* USER CODE BEGIN AES_MspDeInit 0 */
+
+  /* USER CODE END AES_MspDeInit 0 */
+    /* Peripheral clock disable */
+    __HAL_RCC_CRYP_CLK_DISABLE();
+
+    /* AES interrupt DeInit */
+    HAL_NVIC_DisableIRQ(AES_IRQn);
+  /* USER CODE BEGIN AES_MspDeInit 1 */
+
+  /* USER CODE END AES_MspDeInit 1 */
+  }
+
+}
+
+void HAL_CRC_MspInit(CRC_HandleTypeDef* hcrc)
+{
+
+  if(hcrc->Instance==CRC)
+  {
+  /* USER CODE BEGIN CRC_MspInit 0 */
+
+  /* USER CODE END CRC_MspInit 0 */
+    /* Peripheral clock enable */
+    __HAL_RCC_CRC_CLK_ENABLE();
+  /* USER CODE BEGIN CRC_MspInit 1 */
+
+  /* USER CODE END CRC_MspInit 1 */
+  }
+
+}
+
+void HAL_CRC_MspDeInit(CRC_HandleTypeDef* hcrc)
+{
+
+  if(hcrc->Instance==CRC)
+  {
+  /* USER CODE BEGIN CRC_MspDeInit 0 */
+
+  /* USER CODE END CRC_MspDeInit 0 */
+    /* Peripheral clock disable */
+    __HAL_RCC_CRC_CLK_DISABLE();
+  /* USER CODE BEGIN CRC_MspDeInit 1 */
+
+  /* USER CODE END CRC_MspDeInit 1 */
+  }
+
+}
+
 void HAL_I2C_MspInit(I2C_HandleTypeDef* hi2c)
 {
 
