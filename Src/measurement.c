@@ -104,23 +104,17 @@ uint8_t MEASUREMENT_getPPG(void) {
 	// Initialize variables
 	uint32_t red,ir;
 	uint16_t cnt = 0;
-	uint8_t file_path[30];
-	sprintf(file_path,"ppg/%x_%d.txt ", MEASUREMENT_getId(), MEASUREMENT_getNo());
-	// Open proper files
-	SD_createFile((uint8_t*) file_path);
 	// Save name of file to variable
 	MAX30102_init();
 	// PPG loop
 	while(cnt < MEASUREMENT_getDuration()*100) {
 		if (MAX30102_getRegValue(MAX30102_INT_STATUS1) & 0x40) {
 			MAX30102_read(&red, &ir);
-			SD_savePPG(&red, &ir);
+			CONTROL_ppgDataHandler(&red, &ir);
 			cnt+=1;
-			HAL_Delay(2);
+			HAL_Delay(1);
 		}
 	}
-	// Close file
-	SD_closeFile();
 	return 0;
 }
 uint8_t MEASUREMENT_getECG(void) {
@@ -137,20 +131,13 @@ void MEASUREMENT_reschedule(void) {
 		// Reschedule next measurement
 		uint8_t time[3]; /* H/M/S */
 		CLOCK_getTime(time);
-		uint8_t data[50];
-		uint8_t size = sprintf(data, "\nCurrent time: %d:%d:%d", time[0], time[1], time[2]);
-		HAL_UART_Transmit_IT(&huart1, data, size);
-		HAL_Delay(3);
 		time[1]+= MEASUREMENT_getFreq();
 		if (time[1] >= 60) {
 			time[1]-= 60;
 			time[0]+=1;
 			if (time[0] >= 24) time[0]-=24;
 		}
-		size = sprintf(data, "\nNext Alarm time: %d:%d:%d", time[0], time[1], time[2]);
-		HAL_UART_Transmit_IT(&huart1, data, size);
-		CLOCK_setAlarm(time);
-		HAL_Delay(3);
+	CLOCK_setAlarm(time);
 	}
 }
 

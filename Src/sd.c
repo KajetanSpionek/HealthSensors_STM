@@ -58,12 +58,17 @@ uint8_t SD_closeFile(void) {
 
 uint8_t SD_openFile(uint8_t* path) {
 
-	return f_open(&myfile,(TCHAR const*)path, FA_OPEN_EXISTING | FA_WRITE | FA_READ);
+	return f_open(&myfile,(TCHAR const*)path, FA_OPEN_ALWAYS | FA_WRITE | FA_READ);
 }
 
 uint8_t SD_createFile(uint8_t* path) {
 
 	return f_open(&myfile, (TCHAR const*)path, FA_CREATE_NEW | FA_WRITE | FA_READ);
+}
+
+uint8_t SD_movePtrToEnd(void) {
+
+	return f_lseek(&myfile, f_size(&myfile));
 }
 
 void SD_readLine(uint8_t* data, uint8_t* length) {
@@ -81,16 +86,27 @@ void SD_readLine(uint8_t* data, uint8_t* length) {
 	*length = _cnt;
 }
 
-void SD_savePPG(uint32_t* red, uint32_t* ir) {
+void SD_savePpg(uint32_t* red_stash, uint32_t* ir_stash) {
 
 	uint32_t static byteswritten;
 	uint8_t static wtext[30];
 	uint8_t static  msg_size = 0;
-	msg_size = sprintf(wtext, "%d\t%d\r\n", *red, *ir);
-	f_write(&myfile, wtext, msg_size, (void*)&byteswritten);
+	for(uint8_t _i = 0; _i<10; _i++) {
+		msg_size = sprintf(wtext,  "%lu,%lu\r\n", *(red_stash + _i), *(ir_stash + _i));
+		f_write(&myfile, wtext, msg_size, (void*)&byteswritten);
+	}
 }
 
+void SD_savePpgEncrypted(uint32_t* data) {
 
+	uint32_t static byteswritten;
+	uint8_t static wtext[20];
+	uint8_t static  msg_size = 0;
+	for(uint8_t _i = 0; _i<4; _i++) {
+			msg_size = sprintf(wtext,  "%08lx ", *(data+_i));
+			f_write(&myfile, wtext, msg_size, (void*)&byteswritten);
+	}
+}
 
 
 

@@ -13,12 +13,12 @@
 #include "sd.h"
 #include "measurement.h"
 #include "device.h"
+#include "aes.h"
 
 extern UART_HandleTypeDef huart1;
 
 void CONTROL_initHandler(void);
 void CONTROL_idleHandler(void);
-
-
+void CONTROL_ppgDataHandler(uint32_t* red, uint32_t* ir);
 
 #endif /* CONTROL_H_ */

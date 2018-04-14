@@ -80,6 +80,7 @@ SD_HandleTypeDef hsd;
 HAL_SD_CardInfoTypedef SDCardInfo;
 
 UART_HandleTypeDef huart1;
+UART_HandleTypeDef huart3;
 
 /* USER CODE BEGIN PV */
 /* Private variables ---------------------------------------------------------*/
@@ -96,6 +97,7 @@ static void MX_I2C1_Init(void);
 static void MX_RTC_Init(void);
 static void MX_CRC_Init(void);
 static void MX_AES_Init(void);
+static void MX_USART3_UART_Init(void);
 static void MX_NVIC_Init(void);
 
 /* USER CODE BEGIN PFP */
@@ -104,18 +106,17 @@ static void MX_NVIC_Init(void);
 /* USER CODE END PFP */
 
 /* USER CODE BEGIN 0 */
-
+uint8_t Received[3];
 /* USER CODE END 0 */
 
 int main(void)
 {
 
   /* USER CODE BEGIN 1 */
-	uint8_t data[50];
-	uint8_t var = 3;
+	//uint8_t data[50];
 	//uint8_t date[4] = {3,12,11,6};
 	uint8_t time[3] = {20, 30, 25};
-	uint8_t size = sprintf(data, "Test msg: %d\n", var);
+	//uint8_t size;
   /* USER CODE END 1 */
 
   /* MCU Configuration----------------------------------------------------------*/
@@ -145,6 +146,7 @@ int main(void)
   MX_USB_DEVICE_Init();
   MX_CRC_Init();
   MX_AES_Init();
+  MX_USART3_UART_Init();
 
   /* Initialize interrupts */
   MX_NVIC_Init();
@@ -155,9 +157,26 @@ int main(void)
 
   // Init handler
   CONTROL_initHandler();
+  //HAL_UART_Receive_IT(&huart3, Received, 3);
   MEASUREMENT_setMeasurement(0x46A2,0,2,1,30,1, time);
 
 
+//  uint32_t aes_input[4] = {0x46464646, 0xCBCBCBCB, 0x00007676, 0x12121212}; //0xEEEEEEEE, 0xA2, 0x27, 0x76, 0x34, 0xFC, 0xEE, 0xA2, 0x27, 0x76, 0x34, 0xFC};
+//  uint32_t aes_output[4] = {0};
+//
+//  size = sprintf(data, "Aes input: %08lx:%08lx:%08lx:%08lx\n", aes_input[0], aes_input[1], aes_input[2], aes_input[3]);
+//  HAL_UART_Transmit_IT(&huart1, data, size);
+//  HAL_Delay(10);
+//
+//
+//  HAL_CRYP_AESECB_Encrypt(&hcryp, aes_input, 16, aes_output, 10);
+//
+//
+//  size = sprintf(data, "Aes output: %08lx:%08lx:%08lx:%08lx\n", aes_output[0], aes_output[1], aes_output[2], aes_output[3]);
+//  HAL_UART_Transmit_IT(&huart1, data, size);
+//  HAL_Delay(10);
+//
+//    HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_4);
 
   /* USER CODE END 2 */
 
@@ -169,12 +188,18 @@ int main(void)
 
   /* USER CODE BEGIN 3 */
 	  CONTROL_idleHandler();
-	  //HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_4);
 
-	  //CLOCK_getTime(time);
-	  //size = sprintf(data, "\nCurrent time: %d:%d:%d", time[0], time[1], time[2]);
-	  //HAL_UART_Transmit_IT(&huart1, data, size);
-	  //HAL_Delay(1000);
+
+//	  CLOCK_getTime(time);
+//	  size = sprintf(data, "\nCurrent time: %d:%d:%d", time[0], time[1], time[2]);
+//	  HAL_UART_Transmit_IT(&huart1, data, size);
+//	  HAL_Delay(1000);
+
+
+
+
+
+
 
 
   }
@@ -285,6 +310,9 @@ static void MX_NVIC_Init(void)
   /* USB_HP_IRQn interrupt configuration */
   HAL_NVIC_SetPriority(USB_HP_IRQn, 0, 0);
   HAL_NVIC_EnableIRQ(USB_HP_IRQn);
+  /* USART3_IRQn interrupt configuration */
+  HAL_NVIC_SetPriority(USART3_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(USART3_IRQn);
 }
 
 /* ADC init function */
@@ -467,6 +495,25 @@ static void MX_USART1_UART_Init(void)
   huart1.Init.HwFlowCtl = UART_HWCONTROL_NONE;
   huart1.Init.OverSampling = UART_OVERSAMPLING_16;
   if (HAL_UART_Init(&huart1) != HAL_OK)
+  {
+    _Error_Handler(__FILE__, __LINE__);
+  }
+
+}
+
+/* USART3 init function */
+static void MX_USART3_UART_Init(void)
+{
+
+  huart3.Instance = USART3;
+  huart3.Init.BaudRate = 115200;
+  huart3.Init.WordLength = UART_WORDLENGTH_8B;
+  huart3.Init.StopBits = UART_STOPBITS_1;
+  huart3.Init.Parity = UART_PARITY_NONE;
+  huart3.Init.Mode = UART_MODE_TX_RX;
+  huart3.Init.HwFlowCtl = UART_HWCONTROL_NONE;
+  huart3.Init.OverSampling = UART_OVERSAMPLING_16;
+  if (HAL_UART_Init(&huart3) != HAL_OK)
   {
     _Error_Handler(__FILE__, __LINE__);
   }

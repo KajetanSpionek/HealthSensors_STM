@@ -12,6 +12,7 @@
 #include "sd.h"
 #include "clock.h"
 #include "max30102.h"
+#include "control.h"
 
 extern UART_HandleTypeDef huart1;
 
