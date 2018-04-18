@@ -15,12 +15,17 @@ extern UART_HandleTypeDef huart1;
 extern UART_HandleTypeDef huart3;
 
 
-#define ESP_STARTBYTE 0xAB
+#define ESP_STARTBYTE 0x7E
 
-/* ESP <-> STM commands */
-#define ESP_CMD_ECG 			0x10
-#define ESP_CMD_PPG_RED 		0x11
-#define ESP_CMD_PPG_IR 			0x12
+
+/* Commands sent to ESP */
+#define ESP_CMD_ECG 			0x40
+#define ESP_CMD_PPG_RED 		0x41
+#define ESP_CMD_PPG_IR 			0x42
+
+/* Comands incoming from ESP */
+#define ESP_SET_CLOCK			0xA1
+#define ESP_SET_DATE			0xA2
 
 
 void ESP_startReceivingData(void);

@@ -17,24 +17,38 @@ void ESP_startReceivingData(void) {
 void ESP_receiveHandler(uint8_t msg) {
 
 	uint8_t static rec = 0;
-	uint8_t static time_cnt = 0;
-	uint8_t static timer[3];
-	uint8_t static data[50];
-	uint8_t static size;
+	uint8_t static in_case_cnt = 0;
+	uint8_t static box[3];
 
 	switch(rec) {
-	case 0: if (msg == 0x7E) rec = 1; break;
-	case 1: if (msg == 0xAB) rec = 2; break;
-	case 2:
-			timer[time_cnt] = msg;
-			time_cnt+=1;
-			if(time_cnt == 3) {
-				time_cnt = 0;
+	case 0: // Search for starting byte (0x7E)
+			if (msg == ESP_STARTBYTE) rec = 1; break;
+	case 1: // Decide type of msg
+			if (msg == ESP_SET_CLOCK) rec = 2;
+			if (msg == ESP_SET_DATE) rec = 3;
+			break;
+	case 2: // Set time
+			box[in_case_cnt] = msg;
+			in_case_cnt+= 1;
+			if(in_case_cnt == 3) {
+				in_case_cnt = 0;
 				rec = 0;
-				CLOCK_setTime(timer);
+				CLOCK_setTime(box);
+			}
+			break;
+	case 3: // Set date
+			box[in_case_cnt] = msg;
+			in_case_cnt+= 1;
+			if(in_case_cnt == 4) {
+				in_case_cnt = 0;
+				box[1]+= 1;
+				box[2]-= 100;
+				rec = 0;
+				CLOCK_setDate(box);
 			}
 			break;
 	default: break;
+
 	}
 
 }

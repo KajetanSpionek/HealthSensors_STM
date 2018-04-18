@@ -116,6 +116,7 @@ int main(void)
 	uint8_t data[50];
 	//uint8_t date[4] = {3,12,11,6};
 	uint8_t time[3] = {20, 30, 25};
+	uint8_t date[4] = {1, 1, 1, 1};
 	uint8_t val;
 	uint8_t size;
 	uint8_t buff[16];
@@ -190,7 +191,8 @@ int main(void)
 
 
 	  CLOCK_getTime(time);
-	  size = sprintf(data, "\nCurrent time: %d:%d:%d", time[0], time[1], time[2]);
+	  CLOCK_getDate(date);
+	  size = sprintf(data, "\nDate: %d:%d:%d %d, time: %d:%d:%d\n", date[0], date[1], date[2], date[3], time[0], time[1], time[2]);
 	  HAL_UART_Transmit_IT(&huart1, data, size);
 	  HAL_Delay(500);
 
