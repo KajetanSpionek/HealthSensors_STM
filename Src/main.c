@@ -59,6 +59,7 @@
 #include "sd.h"
 #include "control.h"
 #include "clock.h"
+#include "esp.h"
 
 /* USER CODE END Includes */
 
@@ -106,17 +107,18 @@ static void MX_NVIC_Init(void);
 /* USER CODE END PFP */
 
 /* USER CODE BEGIN 0 */
-uint8_t Received[3];
 /* USER CODE END 0 */
 
 int main(void)
 {
 
   /* USER CODE BEGIN 1 */
-	//uint8_t data[50];
+	uint8_t data[50];
 	//uint8_t date[4] = {3,12,11,6};
 	uint8_t time[3] = {20, 30, 25};
-	//uint8_t size;
+	uint8_t val;
+	uint8_t size;
+	uint8_t buff[16];
   /* USER CODE END 1 */
 
   /* MCU Configuration----------------------------------------------------------*/
@@ -157,27 +159,24 @@ int main(void)
 
   // Init handler
   CONTROL_initHandler();
-  //HAL_UART_Receive_IT(&huart3, Received, 3);
-  MEASUREMENT_setMeasurement(0x46A2,0,2,1,30,1, time);
+  ESP_startReceivingData();
+  //MEASUREMENT_setMeasurement(0x46A2,0,2,1,30,1, time);
 
-
-//  uint32_t aes_input[4] = {0x46464646, 0xCBCBCBCB, 0x00007676, 0x12121212}; //0xEEEEEEEE, 0xA2, 0x27, 0x76, 0x34, 0xFC, 0xEE, 0xA2, 0x27, 0x76, 0x34, 0xFC};
-//  uint32_t aes_output[4] = {0};
+//  for(uint8_t _i = 0; _i < 3; _i++) {
 //
-//  size = sprintf(data, "Aes input: %08lx:%08lx:%08lx:%08lx\n", aes_input[0], aes_input[1], aes_input[2], aes_input[3]);
-//  HAL_UART_Transmit_IT(&huart1, data, size);
-//  HAL_Delay(10);
+//	  val = SD_streamFilePpg((uint8_t*)"test.txt", buff, _i);
+//	  size = sprintf(data, "Data status[%d]\n", val);
+//	  HAL_UART_Transmit_IT(&huart1, data, size);
+//	  HAL_Delay(200);
+//	  if(val == 0) {
+//	  	  for(uint8_t _j = 0; _j < 4; _j++) {
+//	  		size = sprintf(data, "Reveived data[%d]: %c %c %c %c\n", _j, buff[0+_j*4], buff[1+_j*4], buff[2+_j*4], buff[3+_j*4]);
+//	  		HAL_UART_Transmit_IT(&huart1, data, size);
+//	  		HAL_Delay(200);
+//	  	  }
+//	  }
 //
-//
-//  HAL_CRYP_AESECB_Encrypt(&hcryp, aes_input, 16, aes_output, 10);
-//
-//
-//  size = sprintf(data, "Aes output: %08lx:%08lx:%08lx:%08lx\n", aes_output[0], aes_output[1], aes_output[2], aes_output[3]);
-//  HAL_UART_Transmit_IT(&huart1, data, size);
-//  HAL_Delay(10);
-//
-//    HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_4);
-
+//  }
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -187,19 +186,13 @@ int main(void)
   /* USER CODE END WHILE */
 
   /* USER CODE BEGIN 3 */
-	  CONTROL_idleHandler();
+	  //CONTROL_idleHandler();
 
 
-//	  CLOCK_getTime(time);
-//	  size = sprintf(data, "\nCurrent time: %d:%d:%d", time[0], time[1], time[2]);
-//	  HAL_UART_Transmit_IT(&huart1, data, size);
-//	  HAL_Delay(1000);
-
-
-
-
-
-
+	  CLOCK_getTime(time);
+	  size = sprintf(data, "\nCurrent time: %d:%d:%d", time[0], time[1], time[2]);
+	  HAL_UART_Transmit_IT(&huart1, data, size);
+	  HAL_Delay(500);
 
 
   }

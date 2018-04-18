@@ -9,15 +9,22 @@
 #define ESP_H_
 
 #include "stm32l1xx_hal.h"
+#include "clock.h"
 
-#define ESP_STARTBYTE 0x7E;
+extern UART_HandleTypeDef huart1;
+extern UART_HandleTypeDef huart3;
+
+
+#define ESP_STARTBYTE 0xAB
 
 /* ESP <-> STM commands */
-#define ESP_CMD_ECG 0x10
-#define ESP_CMD_PP 0x11
+#define ESP_CMD_ECG 			0x10
+#define ESP_CMD_PPG_RED 		0x11
+#define ESP_CMD_PPG_IR 			0x12
 
 
-
+void ESP_startReceivingData(void);
+void ESP_receiveHandler(uint8_t msg);
 
 
 

@@ -20,6 +20,8 @@ uint8_t CLOCK_getTime(uint8_t* time);
 uint8_t CLOCK_getDate(uint8_t* date);
 uint8_t CLOCK_updateRTC(void);
 
+uint8_t CLOCK_setTime(uint8_t* time);
+uint8_t CLOCK_setDate(uint8_t* date);
 uint8_t CLOCK_setAlarm(uint8_t* time);
 
 

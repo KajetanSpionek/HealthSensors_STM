@@ -27,11 +27,8 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
 
 	uint8_t data[20];
 	uint16_t size = 0;
-	size = sprintf(data, "Received: %d\n", Received);
-
-	 HAL_UART_Transmit_IT(&huart1, data, size);
-	 HAL_Delay(3);
-	 HAL_UART_Receive_IT(&huart3, Received, 3);
+	ESP_receiveHandler(Received);
+	HAL_UART_Receive_IT(&huart3, &Received, 1);
 }
 
 

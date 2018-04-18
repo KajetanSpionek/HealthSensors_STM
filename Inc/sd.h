@@ -53,7 +53,7 @@ void SD_setIsinserted(uint8_t status);
    * @param None
    * @retval None
 */
-void SD_changedSocket(void);
+void SD_changedSocket_IT(void);
 
 /**
    * @brief Mounts SDCard
@@ -61,7 +61,6 @@ void SD_changedSocket(void);
    * @retval status: 0 positive outcome, 1 negative outcome
 */
 uint8_t SD_mount(void);
-
 uint8_t SD_makeDirectory(uint8_t* name);
 uint8_t SD_closeFile(void);
 uint8_t SD_openFile(uint8_t* path);
@@ -70,7 +69,7 @@ uint8_t SD_movePtrToEnd(void);
 void SD_readLine(uint8_t* data, uint8_t* length);
 void SD_savePpg(uint32_t* red, uint32_t* ir);
 void SD_savePpgEncrypted(uint32_t* data);
-
+uint8_t SD_streamFilePpg(uint8_t* path, uint8_t* data, uint8_t offset);
 
 
 

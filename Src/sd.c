@@ -108,6 +108,24 @@ void SD_savePpgEncrypted(uint32_t* data) {
 	}
 }
 
+uint8_t SD_streamFilePpg(uint8_t* path, uint8_t* data, uint8_t offset) {
+
+	SD_openFile(path);
+	UINT* bytes_read = 0;
+	uint32_t eof = f_size(&myfile);
+
+	if(offset*16 >= eof) {
+		f_close(&myfile);
+		return 1;
+	}
+	else {
+		f_lseek(&myfile, offset*16);
+		f_read(&myfile, data, 16, bytes_read); // 4 bytes = 1 sample; 4 samples = 16 bytes
+		f_close(&myfile);
+		return 0;
+	}
+}
+
 
 
 

@@ -9,10 +9,13 @@
 #define INTERRUPTS_H_
 
 #include "stm32l1xx_hal.h"
+#include "esp.h"
+#include "measurement.h"
+#include "sd.h"
 
 extern UART_HandleTypeDef huart1;
 extern UART_HandleTypeDef huart3;
-extern uint8_t Received[3];
+extern uint8_t Received;
 
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin);
 void HAL_RTC_AlarmAEventCallback(RTC_HandleTypeDef *hrtc);
