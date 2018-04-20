@@ -194,7 +194,7 @@ int main(void)
 	  CLOCK_getDate(date);
 	  size = sprintf(data, "\nDate: %d:%d:%d %d, time: %d:%d:%d\n", date[0], date[1], date[2], date[3], time[0], time[1], time[2]);
 	  HAL_UART_Transmit_IT(&huart1, data, size);
-	  HAL_Delay(500);
+	  HAL_Delay(10000);
 
 
   }
