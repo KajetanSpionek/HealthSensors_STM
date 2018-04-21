@@ -14,6 +14,7 @@
 #include "measurement.h"
 #include "device.h"
 #include "aes.h"
+#include "esp.h"
 
 extern UART_HandleTypeDef huart1;
 

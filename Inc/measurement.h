@@ -39,6 +39,9 @@ typedef struct {
 	uint8_t no;					/* No. of current/last measurement */
 	uint8_t finished;			/* Positive if measurement session completed */
 	uint16_t id;				/* Measurement ID - unique session identifier */
+	uint8_t busy;				/* Current device state (is performing measurements atm)
+								 0 - Idle
+								 1 - Reading ecg or ppg data ATM (or encrypting/saving it) */
 
 } MeasurementStruct;
 
@@ -63,6 +66,7 @@ uint8_t MEASUREMENT_setMeasurement(uint16_t id, uint8_t mode, uint8_t type, uint
 
 /* Setters and getters */
 void MEASUREMENT_setFlag(uint8_t value);
+void MEASUREMENT_setBusy(uint8_t busy);
 uint8_t MEASUREMENT_getFlag(void);
 uint8_t MEASUREMENT_getNo(void);
 void MEASUREMENT_incNo(void);
@@ -72,6 +76,7 @@ uint8_t MEASUREMENT_getAmount(void);
 uint8_t MEASUREMENT_getFreq(void);
 uint16_t MEASUREMENT_getId(void);
 uint8_t MEASUREMENT_getDuration(void);
+uint8_t MEASUREMENT_getBusy(void);
 
 /* Measurement functions */
 uint8_t MEASUREMENT_getPPG(void);

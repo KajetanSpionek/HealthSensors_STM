@@ -31,6 +31,7 @@ uint8_t MEASUREMENT_setMeasurement(uint16_t id, uint8_t mode, uint8_t type, uint
 	MeasurementInfo.no = 0;
 	MeasurementInfo.finished = 0;
 	MeasurementInfo.id = id;
+	MeasurementInfo.busy = 0;
 
 	// Calculate left_measurements
 	MeasurementInfo.amount = length * 60 / freq;
@@ -52,6 +53,11 @@ uint8_t MEASUREMENT_setMeasurement(uint16_t id, uint8_t mode, uint8_t type, uint
 void MEASUREMENT_setFlag(uint8_t value) {
 
 	MeasurementInfo.flag = value;
+}
+
+void MEASUREMENT_setBusy(uint8_t busy) {
+
+	MeasurementInfo.busy = busy;
 }
 
 uint8_t MEASUREMENT_getFlag(void) {
@@ -97,6 +103,10 @@ uint16_t MEASUREMENT_getId(void) {
 uint8_t MEASUREMENT_getDuration(void) {
 
 	return MeasurementInfo.duration;
+}
+
+uint8_t MEASUREMENT_getBusy(void) {
+	return MeasurementInfo.busy;
 }
 
 uint8_t MEASUREMENT_getPPG(void) {

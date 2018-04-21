@@ -114,12 +114,13 @@ int main(void)
 
   /* USER CODE BEGIN 1 */
 	uint8_t data[50];
+	uint8_t data2[2]= {0x7E, 0x11};
 	//uint8_t date[4] = {3,12,11,6};
-	uint8_t time[3] = {20, 30, 25};
-	uint8_t date[4] = {1, 1, 1, 1};
-	uint8_t val;
+	//uint8_t time[3] = {20, 30, 25};
+	//uint8_t date[4] = {1, 1, 1, 1};
+	//uint8_t val;
 	uint8_t size;
-	uint8_t buff[16];
+	//uint8_t buff[16];
   /* USER CODE END 1 */
 
   /* MCU Configuration----------------------------------------------------------*/
@@ -161,6 +162,7 @@ int main(void)
   // Init handler
   CONTROL_initHandler();
   ESP_startReceivingData();
+  size = sprintf(data, "Sent: %x:%x \n", data2[0], data2[1]);
   //MEASUREMENT_setMeasurement(0x46A2,0,2,1,30,1, time);
 
 //  for(uint8_t _i = 0; _i < 3; _i++) {
@@ -190,11 +192,13 @@ int main(void)
 	  //CONTROL_idleHandler();
 
 
-	  CLOCK_getTime(time);
-	  CLOCK_getDate(date);
-	  size = sprintf(data, "\nDate: %d:%d:%d %d, time: %d:%d:%d\n", date[0], date[1], date[2], date[3], time[0], time[1], time[2]);
-	  HAL_UART_Transmit_IT(&huart1, data, size);
-	  HAL_Delay(10000);
+//	  CLOCK_getTime(time);
+//	  CLOCK_getDate(date);
+//	  size = sprintf(data, "\nDate: %d:%d:%d %d, time: %d:%d:%d\n", date[0], date[1], date[2], date[3], time[0], time[1], time[2]);
+//	  HAL_UART_Transmit_IT(&huart1, data, size);
+	  HAL_Delay(1000);
+	  HAL_UART_Transmit_IT(&huart3, data2, 2);
+	  //HAL_UART_Transmit_IT(&huart1, data, size);
 
 
   }

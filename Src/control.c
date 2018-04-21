@@ -23,6 +23,10 @@ void CONTROL_initHandler(void) {
 	DEVICE_setPcbVersion((float) 1.3);
 	// Set software version
 	DEVICE_setSoftVersion((float) 0);
+	// Set wifi status
+	DEVICE_setWifiConnected(0);
+	// Set cloud status
+	DEVICE_setCloudInitialized(0);
 }
 
 void CONTROL_idleHandler(void) {
@@ -42,8 +46,9 @@ void CONTROL_idleHandler(void) {
 		}
 		// Reschedule next measurement time
 		MEASUREMENT_reschedule();
-		// Disable flag
+		// Disable flag & allow data transmission
 		MEASUREMENT_setFlag(0);
+		MEASUREMENT_setBusy(0);
 	}
 }
 

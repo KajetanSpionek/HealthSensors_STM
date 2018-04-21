@@ -27,7 +27,16 @@ void ESP_receiveHandler(uint8_t msg) {
 	case esp_route: // Decide type of msg
 			if (msg == ESP_SET_CLOCK) rec = esp_set_time;
 			else if (msg == ESP_SET_DATE) rec = esp_set_date;
-			else if (msg == ESP_PING) rec = esp_ping;
+			else if (msg == ESP_WIFI) rec = esp_wifi;
+			else if (msg == ESP_CLOUD_RDY) rec = esp_cloud_rdy;
+			else if (msg == ESP_DATA_ACK) {
+				// TODO Call function from data interface
+				rec = esp_idle;
+			}
+			else if (msg == ESP_DATA_NACK) {
+				// TODO Call function from data interface
+				rec = esp_idle;
+			}
 			else rec = esp_idle;
 			break;
 	case esp_set_time: // Set time
@@ -51,11 +60,51 @@ void ESP_receiveHandler(uint8_t msg) {
 				CLOCK_setDate(box);
 			}
 			break;
-	case esp_ping: // Ping back
-			HAL_UART_Transmit_IT(&huart1, &msg, 1);
+	case esp_wifi: // Ping back
+		DEVICE_setWifiConnected(msg);
+		rec = esp_idle;
+		break;
+	case esp_cloud_rdy: // Ping back
+			DEVICE_setCloudInitialized(msg);
 			rec = esp_idle;
+			break;
 	default: break;
 
 	}
+}
+
+void ESP_dataHandler(void) {
+
+	// Check if connected to wifi, cloud & not busy
+	if(DEVICE_getCloudInitialized() == 0) return;
+	if(DEVICE_getWifiConnected() == 0) return;
+	if(MEASUREMENT_getBusy() == 1) return;
+
+	// Check if there is data to transmit
+
+	// Check if ESP accepted last data
+
+	// Read data from SD
+
+	// Sent data
+
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
