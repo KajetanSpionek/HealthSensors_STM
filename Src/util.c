@@ -26,3 +26,20 @@ void UTIL_powerShutdown(uint8_t mode, uint8_t time) {
 			break;
 	}
 }
+
+void UTIL_convertAsciiToHex(uint8_t* input, uint8_t* output) {
+
+	for(uint8_t _i = 0; _i < 16; _i++) {
+
+		if (input[2 * _i] > 57)
+			input[2 * _i]-= 39;
+
+		if (input[(2 * _i) + 1] > 57)
+			input[(2 * _i) + 1]-= 39;
+
+		input[2 * _i]-= 48;
+		input[(2 * _i) + 1]-= 48;
+
+		output[_i] = input[2 * _i] << 4 | input[(2 * _i) + 1];
+	}
+}

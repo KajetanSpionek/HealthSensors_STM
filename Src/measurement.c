@@ -13,6 +13,9 @@ uint8_t MEASUREMENT_setMeasurement(uint16_t id, uint8_t mode, uint8_t type, uint
 	// Check if measurement session in progress
 	if (MeasurementInfo.is_active == 1) return 1;
 
+	// Check if device is blocked (recently finished measurements and data not transfered)
+	if (MeasurementInfo.blocked == 1) return 4;
+
 	// Check if SDCard is inserted
 	if (SD_getIsinserted() == 1) return 2;
 
@@ -29,11 +32,10 @@ uint8_t MEASUREMENT_setMeasurement(uint16_t id, uint8_t mode, uint8_t type, uint
 	MeasurementInfo.start_time[1] = start_time[1];
 	MeasurementInfo.start_time[2] = start_time[2];
 	MeasurementInfo.no = 0;
-	MeasurementInfo.finished = 0;
 	MeasurementInfo.id = id;
 	MeasurementInfo.busy = 0;
 
-	// Calculate left_measurements
+	// Calculate total measurements
 	MeasurementInfo.amount = length * 60 / freq;
 
 	// Set next measurement to starting time
@@ -44,6 +46,13 @@ uint8_t MEASUREMENT_setMeasurement(uint16_t id, uint8_t mode, uint8_t type, uint
 	// Set Alarm
 	CLOCK_setAlarm(start_time);
 
+	// Set esp transmission flags
+	ESP_setReadPtr(0);
+	ESP_setCurrentFileId(1);
+	if (type == 0)
+		ESP_setCurrentFileType(0);
+	else
+		ESP_setCurrentFileType(1);
 	// Set is_active and flag
 	MeasurementInfo.flag = 0;
 	MeasurementInfo.is_active = 1;
@@ -58,6 +67,16 @@ void MEASUREMENT_setFlag(uint8_t value) {
 void MEASUREMENT_setBusy(uint8_t busy) {
 
 	MeasurementInfo.busy = busy;
+}
+
+void MEASUREMENT_setBlocked(uint8_t fin) {
+
+	MeasurementInfo.blocked = fin;
+}
+
+void MEASUREMENT_setIsActive(uint8_t active) {
+
+	MeasurementInfo.is_active = active;
 }
 
 uint8_t MEASUREMENT_getFlag(void) {
@@ -109,6 +128,11 @@ uint8_t MEASUREMENT_getBusy(void) {
 	return MeasurementInfo.busy;
 }
 
+uint8_t MEASUREMENT_getBlocked(void) {
+
+	return MeasurementInfo.blocked;
+}
+
 uint8_t MEASUREMENT_getPPG(void) {
 
 	// Initialize variables
@@ -136,7 +160,10 @@ void MEASUREMENT_reschedule(void) {
 
 	// Check measurement session should continue
 	// Total amount of measurements needed - how many has been performed
-	if ((MEASUREMENT_getAmount() - MEASUREMENT_getNo()) == 0) MeasurementInfo.finished = 1;
+	if ((MEASUREMENT_getAmount() - MEASUREMENT_getNo()) == 0) {
+		MeasurementInfo.blocked = 1;
+		MeasurementInfo.is_active = 0;
+	}
 	else {
 		// Reschedule next measurement
 		uint8_t time[3]; /* H/M/S */

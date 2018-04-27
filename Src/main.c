@@ -60,6 +60,7 @@
 #include "control.h"
 #include "clock.h"
 #include "esp.h"
+#include <stdlib.h>
 
 /* USER CODE END Includes */
 
@@ -115,12 +116,12 @@ int main(void)
   /* USER CODE BEGIN 1 */
 	uint8_t data[50];
 	uint8_t data2[2]= {0x7E, 0x11};
-	//uint8_t date[4] = {3,12,11,6};
-	//uint8_t time[3] = {20, 30, 25};
+	uint8_t date[4] = {3,12,11,6};
+	uint8_t time[3] = {20, 36, 00};
 	//uint8_t date[4] = {1, 1, 1, 1};
-	//uint8_t val;
+	uint8_t val;
 	uint8_t size;
-	//uint8_t buff[16];
+	uint8_t buff[16];
   /* USER CODE END 1 */
 
   /* MCU Configuration----------------------------------------------------------*/
@@ -157,29 +158,13 @@ int main(void)
 
   /* USER CODE BEGIN 2 */
 
-
-
   // Init handler
   CONTROL_initHandler();
-  ESP_startReceivingData();
-  size = sprintf(data, "Sent: %x:%x \n", data2[0], data2[1]);
-  //MEASUREMENT_setMeasurement(0x46A2,0,2,1,30,1, time);
+  //MEASUREMENT_setMeasurement(0x78CB,0,2,10,30,1, time);
+  //HAL_Delay(7500);
+  uint8_t dataxx[16] = {0};
 
-//  for(uint8_t _i = 0; _i < 3; _i++) {
-//
-//	  val = SD_streamFilePpg((uint8_t*)"test.txt", buff, _i);
-//	  size = sprintf(data, "Data status[%d]\n", val);
-//	  HAL_UART_Transmit_IT(&huart1, data, size);
-//	  HAL_Delay(200);
-//	  if(val == 0) {
-//	  	  for(uint8_t _j = 0; _j < 4; _j++) {
-//	  		size = sprintf(data, "Reveived data[%d]: %c %c %c %c\n", _j, buff[0+_j*4], buff[1+_j*4], buff[2+_j*4], buff[3+_j*4]);
-//	  		HAL_UART_Transmit_IT(&huart1, data, size);
-//	  		HAL_Delay(200);
-//	  	  }
-//	  }
-//
-//  }
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -189,17 +174,15 @@ int main(void)
   /* USER CODE END WHILE */
 
   /* USER CODE BEGIN 3 */
-	  //CONTROL_idleHandler();
+	 //ESP_sendPpgFrame(dataxx);
+	 CONTROL_idleHandler();
+	 HAL_Delay(1);
 
-
+	  //HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_4);
 //	  CLOCK_getTime(time);
 //	  CLOCK_getDate(date);
 //	  size = sprintf(data, "\nDate: %d:%d:%d %d, time: %d:%d:%d\n", date[0], date[1], date[2], date[3], time[0], time[1], time[2]);
 //	  HAL_UART_Transmit_IT(&huart1, data, size);
-	  HAL_Delay(1000);
-	  HAL_UART_Transmit_IT(&huart3, data2, 2);
-	  //HAL_UART_Transmit_IT(&huart1, data, size);
-
 
   }
   /* USER CODE END 3 */

@@ -8,6 +8,8 @@
 #include "control.h"
 
 void CONTROL_initHandler(void) {
+	// Enable receiving data from ESP
+	ESP_startReceivingData();
 	// Initialize PPG
 	MAX30102_init();
 	// Mount SD card
@@ -27,10 +29,19 @@ void CONTROL_initHandler(void) {
 	DEVICE_setWifiConnected(0);
 	// Set cloud status
 	DEVICE_setCloudInitialized(0);
+	// Set last data status
+	ESP_setLastDataStatus(3);
+	// SET busy
+	MEASUREMENT_setBusy(0);
+	// Set blocked
+	MEASUREMENT_setBlocked(0);
+	// Set isActive
+	MEASUREMENT_setIsActive(0);
 }
 
 void CONTROL_idleHandler(void) {
 
+	ESP_dataHandler();
 	// Wait for alarm interrupt to trigger
 	if(MEASUREMENT_getFlag()) {
 		// Increase current measurement number

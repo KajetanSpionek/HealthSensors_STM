@@ -71,6 +71,11 @@ uint8_t SD_movePtrToEnd(void) {
 	return f_lseek(&myfile, f_size(&myfile));
 }
 
+uint8_t SD_movePtr(uint16_t loc) {
+
+	return f_lseek(&myfile, loc);
+}
+
 void SD_readLine(uint8_t* data, uint8_t* length) {
 
 	uint8_t _cnt = 0;
@@ -103,25 +108,31 @@ void SD_savePpgEncrypted(uint32_t* data) {
 	uint8_t static wtext[20];
 	uint8_t static  msg_size = 0;
 	for(uint8_t _i = 0; _i<4; _i++) {
-			msg_size = sprintf(wtext,  "%08lx ", *(data+_i));
+			msg_size = sprintf(wtext,  "%08lx", *(data+_i));
 			f_write(&myfile, wtext, msg_size, (void*)&byteswritten);
 	}
 }
 
+// 2 means that file doesn't exist
+// 1 means that whole file was transferred
+// 0 means all went good
 uint8_t SD_streamFilePpg(uint8_t* path, uint8_t* data, uint8_t offset) {
 
-	SD_openFile(path);
+	uint8_t buff[32];
+	if (SD_openFile(path) != 0) return 2;
+
 	UINT* bytes_read = 0;
 	uint32_t eof = f_size(&myfile);
 
-	if(offset*16 >= eof) {
+	if(offset*32 >= eof) {
 		f_close(&myfile);
 		return 1;
 	}
 	else {
-		f_lseek(&myfile, offset*16);
-		f_read(&myfile, data, 16, bytes_read); // 4 bytes = 1 sample; 4 samples = 16 bytes
+		f_lseek(&myfile, offset*32);
+		f_read(&myfile, buff, 32, bytes_read); // 4 bytes = 1 sample; 4 samples = 16 bytes
 		f_close(&myfile);
+		UTIL_convertAsciiToHex(buff, data);
 		return 0;
 	}
 }
