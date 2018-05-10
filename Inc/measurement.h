@@ -13,6 +13,7 @@
 #include "clock.h"
 #include "max30102.h"
 #include "control.h"
+#include "util.h"
 
 extern UART_HandleTypeDef huart1;
 
@@ -65,6 +66,8 @@ MeasurementStruct MeasurementInfo;
 uint8_t MEASUREMENT_setMeasurement(uint16_t id, uint8_t mode, uint8_t type, uint8_t freq, uint8_t duration,
 									uint8_t length, uint8_t* start_time);
 
+uint8_t MEASUREMENT_requestMeasurmentFromStream(uint8_t* payload);
+
 /* Setters and getters */
 void MEASUREMENT_setFlag(uint8_t value);
 void MEASUREMENT_setBusy(uint8_t busy);
@@ -74,11 +77,13 @@ uint8_t MEASUREMENT_getFlag(void);
 uint8_t MEASUREMENT_getNo(void);
 void MEASUREMENT_incNo(void);
 uint8_t MEASUREMENT_getIsActive(void);
+uint8_t MEASUREMENT_getMode(void);
 uint8_t MEASUREMENT_getType(void);
 uint8_t MEASUREMENT_getAmount(void);
 uint8_t MEASUREMENT_getFreq(void);
 uint16_t MEASUREMENT_getId(void);
 uint8_t MEASUREMENT_getDuration(void);
+uint8_t MEASUREMENT_getLength(void);
 uint8_t MEASUREMENT_getBusy(void);
 uint8_t MEASUREMENT_getBlocked(void);
 

@@ -19,8 +19,8 @@ void ESP_receiveHandler(uint8_t msg) {
 	uint8_t static rec = esp_idle;
 	uint8_t static in_case_cnt = 0;
 	uint8_t static box[26];
-	// HAL_UART_Transmit_IT(&huart1, &msg, 1);
-	// HAL_Delay(1);
+	HAL_UART_Transmit_IT(&huart1, &msg, 1);
+	//HAL_Delay(1);
 
 	switch(rec) {
 	case esp_idle: // Search for starting byte (0x7E)
@@ -34,7 +34,7 @@ void ESP_receiveHandler(uint8_t msg) {
 			else if (msg == ESP_WIFI) rec = esp_wifi;
 			else if (msg == ESP_CLOUD_RDY) rec = esp_cloud_rdy;
 			else if (msg == ESP_DATA_ACK) {
-				HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_4);
+				//HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_4);
 				ESP_setLastDataStatus(0);
 				rec = esp_idle;
 			}
@@ -79,18 +79,16 @@ void ESP_receiveHandler(uint8_t msg) {
 			if(in_case_cnt == 26) {
 				in_case_cnt = 0;
 				rec = esp_idle;
-				uint8_t data[50];
-				uint8_t size;
-				HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_4);
-
-
-				//size = sprintf(data, "%c%c%c%c%c%c%c%c", box[0], box[1], box[2], box[3], box[4], box[5], box[6], box[7]);
-				//size = sprintf(data, "%c%c%c%c%c%c%c%c", box[8], box[9], box[10], box[11], box[12], box[13], box[14], box[15]);
-				size = sprintf(data, "%c%c%c%c%c%c%c%c", box[16], box[17], box[18], box[19], box[20], box[21], box[24], box[25]);
-				HAL_UART_Transmit_IT(&huart1, data, size);
-
-
-
+				MEASUREMENT_requestMeasurmentFromStream(box);
+				//HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_4);
+				//uint8_t time[3] = {15,01,00};
+				//MEASUREMENT_setMeasurement(0x78CB,0,2,10,30,1, time);
+				//uint8_t data[50];
+				//uint8_t size = sprintf(data, "%x %x %x %x %x %x %x %x ", box[0], box[1], box[2], box[3], box[4], box[5], box[6], box[7]);
+				//uint8_t size = sprintf(data, "%x %x %x %x %x %x %x %x ", box[8], box[9], box[10], box[11], box[12], box[13], box[14], box[15]);
+				//uint8_t size = sprintf(data, "%x %x %x %x %x %x %x %x ", box[16], box[17], box[18], box[19], box[20], box[21], box[22], box[23]);
+				//uint8_t size = sprintf(data, "%x %x %x %x %x %x %x %x ", box[24], box[25], box[26], box[27], box[28], box[21], box[22], box[23]);
+				//HAL_UART_Transmit_IT(&huart1, data, size);
 			}
 			break;
 	default: break;
@@ -124,6 +122,8 @@ void ESP_dataHandler(void) {
 	// last check - works
 	// Check if ESP answered to last data, and if so check status
 		// ESP hasn't responded yet
+
+	HAL_UART_Transmit_IT(&huart1, &DataInfo.last_data_status, 2);
 	if (DataInfo.last_data_status == 2) {
 		failed_cnt+= 1;
 		if (failed_cnt < 10) return;
@@ -138,7 +138,6 @@ void ESP_dataHandler(void) {
 		// Check if ECG available
 	if((MEASUREMENT_getType() & 0x01) && DataInfo.current_file_type == 0) {
 		sprintf(file_path,"ecg/%x_%d.txt ", MEASUREMENT_getId(), DataInfo.current_file_id);
-
 	}
 		// Check if PPG_RED available
 	else if((MEASUREMENT_getType() & 0x02) && DataInfo.current_file_type == 1) {
@@ -155,7 +154,7 @@ void ESP_dataHandler(void) {
 	if (file_status == 0) {
 		// We can transfer buffer
 			// Send frame
-			//HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_4);
+			HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_4);
 			DataInfo.last_data_status = 2;
 			ESP_sendPpgFrame(buff);
 

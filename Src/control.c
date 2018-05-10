@@ -44,6 +44,8 @@ void CONTROL_idleHandler(void) {
 	ESP_dataHandler();
 	// Wait for alarm interrupt to trigger
 	if(MEASUREMENT_getFlag()) {
+		HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_4);
+		UTIL_printMeasurementStats();
 		// Increase current measurement number
 		MEASUREMENT_incNo();
 		// Measure ECG if enabled
@@ -60,6 +62,7 @@ void CONTROL_idleHandler(void) {
 		// Disable flag & allow data transmission
 		MEASUREMENT_setFlag(0);
 		MEASUREMENT_setBusy(0);
+		HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_4);
 	}
 }
 

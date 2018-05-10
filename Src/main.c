@@ -162,7 +162,7 @@ int main(void)
   CONTROL_initHandler();
   //MEASUREMENT_setMeasurement(0x78CB,0,2,10,30,1, time);
   //HAL_Delay(7500);
-  uint8_t dataxx[16] = {0};
+  //uint8_t dataxx[16] = {0};
 
 
   /* USER CODE END 2 */
@@ -176,11 +176,14 @@ int main(void)
   /* USER CODE BEGIN 3 */
 	 //ESP_sendPpgFrame(dataxx);
 	 CONTROL_idleHandler();
-	 HAL_Delay(1);
+	 HAL_Delay(5);
 
 	  //HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_4);
 //	  CLOCK_getTime(time);
 //	  CLOCK_getDate(date);
+//	 time[0] = alarm_time.AlarmTime.Hours;
+//	 time[1] = alarm_time.AlarmTime.Minutes;
+//	 time[2] = alarm_time.AlarmTime.Seconds;
 //	  size = sprintf(data, "\nDate: %d:%d:%d %d, time: %d:%d:%d\n", date[0], date[1], date[2], date[3], time[0], time[1], time[2]);
 //	  HAL_UART_Transmit_IT(&huart1, data, size);
 

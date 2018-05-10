@@ -132,7 +132,7 @@ uint8_t SD_streamFilePpg(uint8_t* path, uint8_t* data, uint8_t offset) {
 		f_lseek(&myfile, offset*32);
 		f_read(&myfile, buff, 32, bytes_read); // 4 bytes = 1 sample; 4 samples = 16 bytes
 		f_close(&myfile);
-		UTIL_convertAsciiToHex(buff, data);
+		UTIL_convertAsciiToHexStream(buff, data, 16+1);
 		return 0;
 	}
 }
